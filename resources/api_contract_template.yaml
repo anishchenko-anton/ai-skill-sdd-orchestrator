@@ -1,0 +1,69 @@
+openapi: 3.0.3
+info:
+  title: API Contract Template
+  description: Контракт взаимодействия между Frontend и Backend
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Локальный сервер разработки
+paths:
+  /examples:
+    get:
+      summary: Получить список примеров
+      operationId: getExamples
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExampleItem'
+    post:
+      summary: Создать новый пример
+      operationId: createExample
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateExampleInput'
+      responses:
+        '201':
+          description: Создано успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExampleItem'
+
+components:
+  schemas:
+    ExampleItem:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "d3b07384-d113-4956-a5db-e1c33c6d2345"
+        name:
+          type: string
+          example: "Пример имени"
+        description:
+          type: string
+          example: "Описание объекта"
+          
+    CreateExampleInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: "Новый пример"
+        description:
+          type: string
+          example: "Новое описание"
