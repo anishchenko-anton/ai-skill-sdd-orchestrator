@@ -1,6 +1,7 @@
 import os
 import subprocess
-import sys
+import shutil
+import tempfile
 from pathlib import Path
 
 def print_step(message):
@@ -14,7 +15,6 @@ def print_warning(message):
 
 def install_frontend_design_skill():
     # Detect .agents/skills directory relative to where the script is run
-    # Assuming script is run from project root, or we can find it
     current_dir = Path.cwd()
     skills_dir = current_dir / ".agents" / "skills"
     
@@ -30,16 +30,25 @@ def install_frontend_design_skill():
 
     print_step("Installing dependent skill 'frontend-design'...")
     
-    # Try to clone from GitHub
-    repo_url = "https://github.com/anthropics/skills-frontend-design.git"
+    # Try to clone from GitHub monorepo
+    repo_url = "https://github.com/anthropics/skills.git"
     
     try:
-        subprocess.run(["git", "clone", repo_url, str(target_dir)], check=True, capture_output=True)
-        print_success("Successfully cloned 'frontend-design' from GitHub.")
-    except subprocess.CalledProcessError:
-        print_warning("Could not clone repository. Creating a fallback SKILL.md for frontend-design.")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            print_step(f"Cloning {repo_url} into temp directory...")
+            subprocess.run(["git", "clone", "--depth", "1", repo_url, tmpdir], check=True, capture_output=True)
+            
+            source_folder = Path(tmpdir) / "skills" / "frontend-design"
+            if source_folder.exists():
+                shutil.copytree(source_folder, target_dir)
+                print_success("Successfully extracted 'frontend-design' from GitHub monorepo.")
+            else:
+                raise FileNotFoundError("Folder skills/frontend-design not found in the repository.")
+    except Exception as e:
+        print_warning(f"Failed to install from repository: {e}")
+        print_warning("Creating a fallback SKILL.md for frontend-design.")
         
-        # Fallback: Create the skill manually if repo doesn't exist
+        # Fallback: Create the skill manually if repo fails
         target_dir.mkdir(parents=True, exist_ok=True)
         skill_md_path = target_dir / "SKILL.md"
         
