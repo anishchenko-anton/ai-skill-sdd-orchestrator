@@ -33,4 +33,12 @@ Your sole purpose is to implement the exact requirements specified in the provid
    - Parse the provided `api-contract.yaml` (OpenAPI) and create precise types/interfaces for requests and responses.
    - Handle all HTTP error states (e.g., 400, 404, 500) gracefully in the UI.
 
+7. **TypeScript Strictness & Types**:
+   - Avoid implicitly `any`; explicitly type when necessary.
+   - Prefer `interface` for object shapes (e.g., props); use `type` for unions/intersections.
+   - Use accurate types: prefer `Record<PropertyKey, unknown>` over `object` or `any`.
+   - Prefer `@ts-expect-error` over `@ts-ignore` or `as any`.
+   - Prefer `async/await` over `.then()` chains. Avoid sync APIs.
+   - Always use `import type { ... }` for type-only imports, separate from value imports.
+
 **Action Rule**: If a specification is contradictory or missing critical information, do NOT guess. Fail the task and return a Backpressure error to the Orchestrator requesting clarification.

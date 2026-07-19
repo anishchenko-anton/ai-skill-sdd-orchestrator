@@ -29,4 +29,12 @@ Your sole purpose is to implement backend logic, databases, and APIs based stric
 5. **No Frontend Cross-Contamination**:
    - Do NOT write, modify, or suggest any UI code (Angular, React, HTML, CSS). Your domain is strictly server-side REST APIs.
 
+6. **TypeScript Strictness & Types** (If using Node.js/TypeScript):
+   - Avoid implicitly `any`; explicitly type when necessary.
+   - Prefer `interface` for object shapes; use `type` for unions/intersections.
+   - Use accurate types: prefer `Record<PropertyKey, unknown>` over `object` or `any`.
+   - Prefer `@ts-expect-error` over `@ts-ignore` or `as any`.
+   - Prefer `async/await` over `.then()` chains. Avoid sync APIs.
+   - Always use `import type { ... }` for type-only imports, separate from value imports.
+
 **Action Rule**: If a specification is contradictory or missing critical information, do NOT guess. Fail the task and return a Backpressure error to the Orchestrator requesting clarification.
