@@ -1,4 +1,4 @@
-﻿Write-Host "=================================================="
+Write-Host "=================================================="
 Write-Host "🚀 Инициализация SDD Orchestrator Environment" -ForegroundColor Cyan
 Write-Host "=================================================="
 
@@ -43,6 +43,21 @@ try {
     }
 } catch {
     Write-Host "❌ Ollama НЕ ОТВЕЧАЕТ на http://localhost:11434. Проверьте, что сервер запущен." -ForegroundColor Red
+}
+
+Write-Host "`n5. Проверка Python (Требуется для Execution скриптов)..."
+try {
+    $pyCheck = python -c "import sys; print('OK')" 2>&1
+    if ($pyCheck -match "OK") {
+        $pyVer = python --version
+        Write-Host "✅ Python установлен ($pyVer)" -ForegroundColor Green
+    } else {
+        throw "Python error"
+    }
+} catch {
+    Write-Host "❌ Python НЕ НАЙДЕН или работает некорректно." -ForegroundColor Red
+    Write-Host "   💡 Подсказка: Установите Python с python.org и обязательно поставьте галочку 'Add Python to PATH' при установке." -ForegroundColor Yellow
+    $script:allPassed = $false
 }
 
 Write-Host "`n=================================================="
