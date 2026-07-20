@@ -34,8 +34,8 @@ python .agents/skills/sdd-orchestrator/scripts/install_deps.py
 
 ### Шаг 3: Проверка готовности окружения (Init Check)
 Чтобы убедиться, что вы ничего не забыли и система готова к работе без сбоев (наличие локальных LLM, правильных файлов и скиллов), запустите скрипт проверки в корне вашего проекта:
-```bash
-python .agents/skills/sdd-orchestrator/scripts/init_check.py
+```powershell
+.\.agents\skills\sdd-orchestrator\scripts\init_check.ps1
 ```
 Если скрипт выдает зеленые галочки, можно приступать к постановке задач!
 
