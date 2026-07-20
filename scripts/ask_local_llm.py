@@ -62,7 +62,7 @@ def main():
                 with open(args.out, 'w', encoding='utf-8', newline='\n') as out_f:
                     out_f.write(generated_text)
                     
-                print(f"✅ Successfully generated response and saved to {args.out} (UTF-8)")
+                print(f"Successfully generated response and saved to {args.out} (UTF-8)")
             else:
                 notify_error(f"Ollama returned unexpected status: {response.status}")
                 sys.exit(1)
