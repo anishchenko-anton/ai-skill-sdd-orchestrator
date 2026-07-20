@@ -40,7 +40,7 @@ def send_message(message):
         "chat_id": chat_id,
         "text": message,
         "parse_mode": "Markdown"
-    }).encode('utf-8')
+    }, ensure_ascii=False).encode('utf-8')
     
     headers = {
         "Content-Type": "application/json"
