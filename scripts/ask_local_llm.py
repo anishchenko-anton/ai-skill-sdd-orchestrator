@@ -24,6 +24,7 @@ def main():
     parser = argparse.ArgumentParser(description="Query local Ollama model and save output to a clean UTF-8 file.")
     parser.add_argument("--model", required=True, help="Ollama model name (e.g. deepseek-coder:6.7b)")
     parser.add_argument("--prompt", required=True, help="Path to the prompt markdown file")
+    parser.add_argument("--rules", required=False, help="Path to the framework rules file to prepend to the prompt")
     parser.add_argument("--out", required=True, help="Path to save the generated output (UTF-8)")
     
     args = parser.parse_args()
@@ -39,10 +40,24 @@ def main():
         notify_error(f"Failed to read prompt file (ensure it's UTF-8): {e}")
         sys.exit(1)
         
+    rules_text = ""
+    if args.rules:
+        if not os.path.exists(args.rules):
+            notify_error(f"Rules file not found: {args.rules}")
+            sys.exit(1)
+        try:
+            with open(args.rules, 'r', encoding='utf-8') as f:
+                rules_text = f.read()
+        except Exception as e:
+            notify_error(f"Failed to read rules file (ensure it's UTF-8): {e}")
+            sys.exit(1)
+            
+    final_prompt = f"{rules_text}\n\n{prompt_text}" if rules_text else prompt_text
+        
     url = "http://localhost:11434/api/generate"
     data = json.dumps({
         "model": args.model,
-        "prompt": prompt_text,
+        "prompt": final_prompt,
         "stream": False
     }).encode('utf-8')
     
