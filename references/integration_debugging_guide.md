@@ -31,3 +31,12 @@ Before requesting code modifications or generating code:
 - Document the exact HTTP Endpoint (`METHOD /path`).
 - Provide expected vs actual JSON payload.
 - State explicitly whether the bug originates in Backend, Frontend, or OpenAPI contract specification.
+
+---
+
+## 3. Post-Fix API Verification Protocol
+
+After applying any fix (code edit, route change, DB migration, or config tweak):
+- **STRICT REQUIREMENT**: Never assume or hope that the fix worked.
+- Execute an empirical API check (via `curl`, HTTP client, or integration test).
+- Verify that the status code, response headers, and JSON payload strictly match expected behavior before declaring the issue resolved.
