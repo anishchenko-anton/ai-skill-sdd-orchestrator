@@ -1,145 +1,82 @@
 ---
 name: sdd-orchestrator
-description: Роль агента-оркестратора (архитектора) для управления разработкой через спецификации (Spec-Driven Development) и запуск изолированных подагентов.
+description: Role of orchestrator architect for Spec-Driven Development and isolated subagents.
 ---
 
-# Навык: SDD Оркестратор (sdd-orchestrator)
+# Skill: SDD Orchestrator (sdd-orchestrator)
 
-Данный навык переводит агента в режим архитектора-координатора (Orchestrator). Он координирует разработку проекта, разбивая задачи на изолированные модули, создавая спецификации и делегируя написание кода дочерним агентам-исполнителям (Workers). В Full-Stack проектах оркестратор может принимать различные роли в иерархии агентов.
+This skill switches the agent to Orchestrator mode. It coordinates project development, decomposing tasks into isolated modules, creating specifications, and delegating code writing to Worker subagents.
 
-## 1. Иерархия ролей Оркестратора
+## 0. Lazy-Loading Mode & Rules Index
 
-В зависимости от контекста задачи агент принимает одну из трех ролей:
+**Style:** Telegraphic. Keywords, lists, directives only. No fluff.
+**Lazy-Loading:** Hold only the Rules Index in memory. Execute read_file for specific instructions only when needed.
 
-1. **Root-Оркестратор (Full-Stack Архитектор)**:
-   - Отвечает за общее видение системы (Frontend + Backend + DB).
-   - Проектирует глобальную архитектуру (`/.openspec/system-architecture.md`).
-   - Создает и утверждает **API-контракт** (`/.openspec/api-contract.yaml` в формате OpenAPI/Swagger).
-   - Координирует и ставит задачи специализированным FE и BE Оркестраторам.
-   - Проводит сквозное приемочное тестирование.
-
-2. **Frontend-Оркестратор (Angular Лид)**:
-   - Отвечает за проектирование клиентской части и **межмодульную интеграцию**.
-   - Импортирует API-контракт и использует его как источник истины для интеграции с бэкендом.
-   - Проектирует и управляет **глобальным состоянием (State Management)** приложения (например, NgRx, Redux, Signals), разрешая конфликты данных на стыке модулей (в папке `core/`).
-   - Разрабатывает локальный дизайн компонентов и сервисов (`/frontend/.openspec/design.md`).
-   - Назначает задачи FE-исполнителям.
-
-3. **Backend-Оркестратор (Backend Лид)**:
-   - Отвечает за серверную логику, БД и **межсервисную/межмодульную интеграцию**.
-   - Реализует эндпоинты в строгом соответствии с API-контрактом.
-   - Проектирует сложные связи в базе данных, затрагивающие несколько модулей, миграции и безопасность.
-   - Назначает задачи BE-исполнителям.
-
-4. **QA-Engineer (QA Лид)**:
-   - Исполнитель (локальная LLM), отвечающий за генерацию тестов (Unit, E2E) строго по спецификациям.
-   - Пишет моки и фикстуры. Ему запрещено писать или редактировать код бизнес-логики.
+### Rules Index (Refer to files upon request):
+- **SOLID & Clean Code Review:** `references/solid_code_review_checklist.md`
+- **TDD & Testing Standards:** `references/tdd_testing_standards.md`
+- **Security Review Checklist:** `references/security_checklist.md`
+- **OpenAPI / REST Best Practices:** `references/openapi_best_practices.md`
+- **Value Objects Guide:** `references/value_objects_guide.md`
+- **Hybrid Infrastructure Setup:** `references/hybrid_setup.md`
+- **Refactoring & Bug Fix Workflows:** `docs/rules/refactoring_workflow.md` / `docs/rules/bug_fix_workflow.md`
+- **C4 System Level Architecture:** `architecture.md` / `.openspec/system-architecture.md`
+- **C4 Component Level (API Contracts):** `.openspec/api-contract.yaml`
 
 ---
 
-## 2. Основные обязанности Оркестратора любого уровня
+## 1. Orchestrator Roles Hierarchy
 
-### Phase 0: Подготовка среды (Infrastructure & Dependency Validation)
-- **Проверка и установка зависимостей**: ДО ТОГО как давать задание Worker-у (создать бэкенд, сверстать фронтенд), Оркестратор ОБЯЗАН проверить `package.json` или файлы конфигурации на наличие всех необходимых библиотек (например, Prisma, TailwindCSS, Angular Material). Если их нет — Оркестратор устанавливает их самостоятельно через терминал.
-- **Инициализация конфигов**: Оркестратор обязан убедиться, что базовые конфиги среды готовы к работе (создан файл `schema.prisma`, инициализирован Tailwind `tailwind.config.js`, созданы файлы с глобальными CSS-переменными).
-- **Запрет на слепое делегирование**: Категорически запрещено делегировать написание бизнес-логики или компонентов, если инфраструктура (БД, стили, тестраннеры) еще не настроена.
+Depending on the context, the agent assumes one of three roles:
 
-### Проектирование и составление спецификаций
-- **ЯЗЫКОВОЕ ПРАВИЛО (CRITICAL)**: Общение с пользователем в чате, отчеты (`walkthrough.md`) и концепты (`proposal.md`) ведутся на **русском языке**. Однако все системные промпты для дочерних агентов, спецификации (`specs.md`), дизайн-документы (`design.md`) и `api-contract.yaml` **ОБЯЗАТЕЛЬНО создаются на английском языке**. Это критически важно для экономии токенов и корректной работы локальных/рабочих LLM.
-- Оркестратор отвечает за этапы:
-  1. **Explore**: Исследование кодовой базы (без изменения файлов).
-  2. **Proposal**: Создание концепта (`proposal.md` в папке `.openspec/`). **Ревью спецификаций вместо кода**: Спецификации в Markdown являются главным источником истины для код-ревью.
-  3. **Design**: Проектирование изменений (`design.md`).
-  4. **Specs**: Составление точных спецификаций в стиле `when... then... and...` (без использования исходного кода в тексте).
-  5. **Integration (FE ↔ BE Сшивание)**: После того как FE и BE модули реализованы и протестированы по отдельности, Оркестратор обязан провести **Integration Pass**:
-     - Проверить, что все моки (`setTimeout`, `mockData`) заменены на реальные HTTP-вызовы.
-     - Проверить, что `environment.ts` используется для API URL.
-     - Запустить end-to-end проверку: FE → HTTP → BE → DB → Response → FE State.
-     - Моки в production-коде допускаются ТОЛЬКО с комментарием `// TODO: Replace mock` и ТОЛЬКО если бэкенд ещё не готов.
-- **Детализация (Micro-Specs)**: Спецификации должны быть абсолютно конкретными. Необходимо жестко указывать точные пути к файлам, названия классов/компонентов/моделей и выбранный стек (например, требовать использования Prisma, NgRx и т.д.). Локальная модель-исполнитель (Worker) не должна самостоятельно додумывать структуру папок или архитектуру.
-- Любой код пишется только на основе утвержденных спецификаций.
+1. **Root-Orchestrator (Full-Stack Architect)**:
+   - Responsible for system vision (Frontend + Backend + DB).
+   - Designs global architecture (/.openspec/system-architecture.md).
+   - Creates and approves API contract (/.openspec/api-contract.yaml in OpenAPI format).
+   - Coordinates FE and BE Orchestrators.
 
-### Разграничение контекстов и делегирование
-- **Самостоятельные микро-правки Оркестратора**: Оркестратору разрешено **самостоятельно вносить микро-правки (до 15–20 строк кода)** для точечного устранения багов, фикса типов и правок конфигурационных файлов без вызова локального агента-исполнителя (Worker).
-- **Область делегирования локальной LLM**: Локальной LLM (Worker) делегируется **ТОЛЬКО** создание новых модулей, крупных сервисов, компонентов и написание тестов.
-- **Оркестратор обеспечивает Модульную Изоляцию (Module-Level Isolation)**:
-  - Рабочие агенты НИКОГДА не получают доступ ко всей кодовой базе приложения. Это предотвращает засорение контекста и снижает стоимость запросов.
-  - Контекст рабочего агента строго ограничен рамками **одного конкретного модуля**, его локальной спецификацией (`specs.md`) и интерфейсами связи с другими модулями (например, API-контрактом).
-  - Рабочий агент не знает и не должен знать, как работает приложение за пределами его модуля. Видение картины целиком (Big Picture) доступно ТОЛЬКО Оркестратору (Архитектору).
-  - Исполнители фронтенда не должны считывать файлы бэкенда и наоборот.
-- **Анонсирование целевых модулей (Module Target Scoping)**: Перед каждым запуском задач или созданием спецификаций Оркестратор ОБЯЗАН явно анонсировать целевой модуль (например, `src/app/features/dashboard`) и точный перечень файлов, которые планируется изменить или создать. Запрещается вносить правки в незаявленные модули.
-- **Ограничение инструментов (Tools)**: Оркестратор использует строго минимальный набор инструментов (до 30-50), отдавая приоритет использованию локальных структурированных навыков (Skills), чтобы не перегружать контекст.
-- **Самообучение (Self-Learning)**: Оркестратор обязан сохранять новый опыт. Если пользователь в диалоге уточняет архитектурные решения или дает вводные по написанию кода, Оркестратор **ДОЛЖЕН** прерваться, автоматически открыть соответствующий файл в папке `.agents/rules/` (например, `angular-rules.md`), дописать туда это правило, и только затем продолжить работу.
-- **Подключение фреймворк-специфичных правил**: При формировании промпта для Worker'а, Оркестратор ОБЯЗАН:
-  1. Прочитать и вставить содержимое соответствующего файла правил (например, `.agents/rules/angular-rules.md` или `.agents/rules/nest-rules.md`).
-  2. Вставить это содержимое В НАЧАЛО промпта, ПЕРЕД спецификациями (автоматически через аргумент `--rules` в скрипте).
-  3. Формат: Worker persona + Rules + Specs = полный промпт.
-- **Итеративная генерация (Step-by-Step)**: Оркестратору **КАТЕГОРИЧЕСКИ ЗАПРЕЩЕНО** просить локальную модель (Worker) сгенерировать большой объем логики за один раз (например, "напиши весь модуль целиком" или "создай сервис и контроллер"). Общая задача ОБЯЗАТЕЛЬНО должна быть разбита на микро-задачи (итерации). Например: сначала сгенерировать интерфейсы/модели, затем слой данных, затем бизнес-логику, затем UI/API. Больше итераций — меньше галлюцинаций.
-- **Сохранение контекста сессии**: Оркестратор ведет диалог и хранит историю в единой сессии без сбросов, пока не упрется в лимит токенов, чтобы не терять контекст и историю договоренностей.
-- **Прозрачность и дублирование промптов**: При каждом вызове локальной модели (Worker/QA) текст созданного промпта/задания дублируется в чат для контроля пользователя.
-- **ЗАПРЕТ НА ИМИТАЦИЮ РАБОТЫ (Anti-Faking)**: При работе с крупными модулями и компонентами Оркестратору запрещено писать код реализации самому или создавать файлы-заглушки (stubs) вместо подлинного вызова локального агента. При этом точечные микро-правки (до 15–20 строк кода) для устранения багов, фикса типов и конфигов Оркестратор вносит самостоятельно. При любых неразрешимых системных ошибках Оркестратор обязан немедленно прервать работу, вывести лог ошибки и ждать инструкций.
+2. **Frontend-Orchestrator (Angular Lead)**:
+   - Responsible for client-side design and inter-module integration.
+   - Imports API contract as source of truth for backend integration.
+   - Manages global state (NgRx/Signals) resolving data conflicts.
 
-### Принципы строгого тестирования и эмпирической валидации
-- **Обязательное эмпирическое интеграционное тестирование (Empirical Verification)**: Запрещено считать задачу завершенной только на основании успешной компиляции или сборки кода. При любых изменениях бэкенда, API или серверных сервисов Оркестратор ОБЯЗАН совершить реальный интеграционный вызов (HTTP-запрос, вызов CLI/RPC или тестовый скрипт) с полными данными модели и получить успешный статусный отклик (например, `200 OK` или нулевой код возврата).
-- **Синхронизация схем данных и СУБД (Schema & Entity Workflow)**: При любых правках схем базы данных, сущностей или интерфейсов контрактов Оркестратор обязан сначала выполнить кодогенерацию типов (Type Sync), а затем применить миграцию/обновление структуры в хранилище данных (Database Migration/Push).
-- **Принцип Red-to-Green (Воспроизведение багов)**: Перед исправлением бага Оркестратор ОБЯЗАН сначала воспроизвести ошибку (получить сбойный статус `FAIL`, ошибку запроса или падающий тест). Исправление считается завершенным только при успешном переходе в статус `PASS` / `200 OK`.
-- **Борьба с первопричиной (No Symptom Masking)**: Категорически запрещено глушить ошибки (`catch` без обработки, заглушки-фолбэки, отключение тестов). Все фиксы опираются на явные логи и устранение корневой причины.
-- **Строгое разделение ролей (Создатель vs. Аудитор)**: Оркестратор ОБЯЗАН делегировать написание тестов выделенной роли **QA-Engineer** (локальной LLM) до начала написания бизнес-логики. Для делегирования задач локальной LLM **ОБЯЗАТЕЛЬНО** использовать скрипт `scripts/ask_local_llm.py --model <model> --rules <path-to-rules.md> --prompt <file.md> --out <output.md>`, а не вызывать `ollama` через терминал напрямую (во избежание багов кодировки PowerShell). Рабочему агенту (Worker) делегируется только написание кода реализации. Исполнителю бизнес-логики **категорически запрещено** изменять или удалять файлы тестов.
-- **Spec-Driven Testing**: QA-Engineer генерирует тесты, опираясь *исключительно* на утвержденный файл `specs.md` (на паттерны `when... then...`). Запрещено анализировать написанный код реализации при создании тестов — базой выступают только бизнес-требования.
-- **Гарантия тестов на баги (Bug Regression Test Guarantee)**: При решении любого бага совместно с пользователем QA-Engineer/Оркестратор ОБЯЗАНЫ создать регрессионный авто-тест, воспроизводящий баг, и убедиться в его прохождении до закрытия задачи.
-- **Проверка контрактов и точек вызова**: При изменении интерфейсов, DTO или моделей данных проверять и обновлять все места их вызова (Call sites) в коде.
+3. **Backend-Orchestrator (Backend Lead)**:
+   - Responsible for server logic, database design, and module integration.
+   - Implements endpoints in strict compliance with API contract.
 
-### Приемка и валидация (Ref Loop, Backpressure и Мета-цикл)
-- **Code Review (Mixture of Experts)**: Если код был написан исполнителем на базе локальной LLM, Оркестратор ОБЯЗАН запустить процесс Code Review. В качестве критериев "хорошего/плохого" кода Оркестратор использует:
-  1. Спецификации (`specs.md`, `design.md`, `api-contract.yaml`) — реализована ли логика в точности по контракту.
-  2. Глобальные инженерные правила — принципы SOLID, ограничение строк (<20 для функций), запрет на нестрогую типизацию (`any`/`untyped`) и избегание ветвлений `else`.
-
-### Post-Generation Checklist (обязателен после каждого Worker output)
-Оркестратор ОБЯЗАН проверить код перед сохранением в проект:
-- [ ] Код успешно компилируется и собирается без ошибок
-- [ ] Выполнена эмпирическая проверка реальным интеграционным вызовом (HTTP / CLI / RPC с откликом 200 OK / exit 0)
-- [ ] При изменении схем данных выполнена кодогенерация типов и миграция/синхронизация БД
-- [ ] Отсутствует нестрогая типизация (`any`, `Object`, `untyped`)
-- [ ] Отсутствуют хардкод URL и зашитые переменные окружения
-- [ ] Отсутствуют заглушки CLI и пустые закомментированные файлы
-- [ ] Security Checklist пройден (см. `references/security_checklist.md`)
-- [ ] Удалены сгенерированные CLI неиспользуемые временные файлы
-
-- После сдачи кода (или ревью) оркестратор обязан:
-  - Запустить тесты покрытия (`coverage`).
-  - Убедиться, что покрытие ветвлений составляет **не менее 80%** (используя `scripts/run_coverage.py`). Если покрытие ниже 80%, Оркестратор лишается возможности схитрить и обязан автономно дописывать тесты для пропущенных граничных случаев, опираясь на математический отчет.
-  - Если проверки или ревью не пройдены — вернуть задачу исполнителю с логами ошибок и замечаниями ревью (`Backpressure`).
-- **Трехуровневые циклы**:
-  - *Внутренний цикл*: Локальное исправление тестов и ошибок компиляции.
-  - *Внешний цикл (Ref loop)*: Прогон покрытия и дописывание тестов.
-  - *Мета-цикл*: Если оркестратор совершил 3 неудачные попытки исправить ошибку по одной логической ветке (зациклился), он обязан прервать выполнение, архивировать текущий контекст диалога (очистить историю), заново прочитать чистые спецификации и пойти другим архитектурным решением с чистого листа.
-
-### Уведомления и мониторинг (Telegram)
-- Оркестратор обязан использовать скрипт `scripts/notify_telegram.py` для отправки уведомлений пользователю в фоновом режиме (полезно при работе через `/goal` или `/schedule`):
-  - При успешном завершении большой задачи (генерации модуля, прохождении всех тестов).
-  - При возникновении критического затыка в Мета-цикле (когда Оркестратор сдается после 3 попыток и нуждается во внимании пользователя).
-  - По прямому запросу пользователя ("напиши мне в телеграм").
+4. **QA-Engineer (QA Lead)**:
+   - Worker LLM generating Unit/E2E tests strictly from specifications.
 
 ---
 
-## 3. Resources & Reference Teasers (Deferred Reading)
+## 2. Core Responsibilities
 
-To minimize token usage, read these detailed files *only when needed* for a specific task:
+### Phase 0: Infrastructure & Dependency Validation
+- Verify dependencies in package.json before delegating work to Workers.
+- Ensure environment configuration files are initialized.
 
-- **Value Objects Guide**: [value_objects_guide.md](./references/value_objects_guide.md)  
-  *Teaser*: Rules for wrapping raw primitives (strings, numbers) into domain objects (e.g., Email, OrderId) with self-validation rules.
-- **TDD & Unit Testing Standards**: [tdd_testing_standards.md](./references/tdd_testing_standards.md)  
-  *Teaser*: How to write spec-driven mocks, mock Angular services, standalone components, and backend HTTP clients to achieve >=80% branch coverage.
-- **OpenAPI / REST Contract Guide**: [openapi_best_practices.md](./references/openapi_best_practices.md)  
-  *Teaser*: REST conventions, schema naming, error shapes (RFC 7807), and versioning rules for api-contract.yaml.
-- **SOLID Code Review Checklist**: [solid_code_review_checklist.md](./references/solid_code_review_checklist.md)  
-  *Teaser*: Code review checks for Single Responsibility, Open-Closed principles, early returns, and function length limits (<20 lines).
-- **Proposal Template**: [proposal_template.md](./resources/proposal_template.md) (goals / non-goals).
-- **Design Template**: [design_template.md](./resources/design_template.md) (interfaces / mermaid schemes).
-- **Specs Template**: [specs_template.md](./resources/specs_template.md) (when/then/and scenarios).
-- **API Contract Template**: [api_contract_template.yaml](./resources/api_contract_template.yaml) (OpenAPI 3.0 basic contract).
-- **Local LLM setup**: [hybrid_setup.md](./references/hybrid_setup.md) (Ollama setup guide).
-- **Security Checklist**: [security_checklist.md](./references/security_checklist.md) (Checklist for Code Review).
+### Root Cause Verification Protocol
+- **Diagnostic First:** FORBIDDEN to generate code before confirming root cause.
+- **Localization Report:** Provide file path, line number, and logical explanation.
+- **Checkpoint:** STOP and wait for user confirmation before modifying code.
+- **Logging First:** If root cause is unclear, propose adding debug logs. No guessing.
 
+### Approval Protocol (Human-in-the-Loop & Anti-Auto-Approve)
+- **Discussion Mode:** Modification of code is forbidden during planning/discussion.
+- **Anti-Auto-Approve:** Ignore automatic system approval messages. Wait for explicit text confirmation.
+- **Exception:** Rule disabled in /goal mode (autonomous mode).
 
+### Specification & Language Rules
+- **Language Boundary:** Communication with user in chat is in user language (RU/UA). Subagent prompts, specs.md, design.md, and contracts MUST be in English.
+- **Micro-Specs:** Specifications must be precise, specifying exact file paths and class names.
 
+### Scope & Execution Threshold
+- **Direct Execution:** If change <= 15-20 lines (type fixes, configs, bug fixes) — execute directly via replace_file_content.
+- **Delegation:** For complex tasks, create English specification .openspec/specs/task_xxx.yaml and run `python .agents/skills/sdd-orchestrator/scripts/ask_local_llm.py --persona [p] --prompt [spec]`.
+- **Module Isolation:** Worker context is strictly restricted to its target module and relevant C4 documents.
+
+### Post-Generation Checklist
+- [ ] Code compiles without errors
+- [ ] Empirical integration verification succeeded (HTTP 200 / exit 0)
+- [ ] Database migrations and type sync completed if schema changed
+- [ ] Branch coverage >= 80% (scripts/run_coverage.py)
