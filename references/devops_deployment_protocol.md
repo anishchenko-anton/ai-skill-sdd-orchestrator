@@ -19,9 +19,11 @@ Upon receiving ANY user request, prompt, or diagnostic question related to serve
 
 ## 2. Infrastructure Standards & Protocols
 
-### A. Pure Git-Driven Workflow (No Manual File Copying)
-- **Forbidden**: Manual copy-pasting or direct SFTP/SCP upload of application files, Docker configs, or source code directly to remote servers.
-- **Mandatory Flow**: All infrastructure changes must be committed to Git and pulled on the destination host (`git push` from repository -> `git pull` on server) or deployed via automated CI/CD pipelines.
+### A. Pure Git-Driven Workflow (STRICT PROHIBITION ON SCP / SFTP / RSYNC)
+- **STRICTLY FORBIDDEN**: Running `scp`, `sftp`, `rsync`, manual copy-pasting, or direct file uploads of application files, `docker-compose.yml`, `nginx.conf`, or source code directly to remote servers.
+- **Mandatory Flow**: ALL deployment and server updates MUST be committed and pushed to Git (`git add` -> `git commit` -> `git push`), followed by pulling on the remote host (`ssh <host> "cd /path && git pull"`) or via automated CI/CD pipelines.
+- **Violation Guard**: Executing `scp` or `sftp` to transfer project files to a server is a CRITICAL RULE VIOLATION.
+
 
 ### B. Architectural Compliance & Environment Isolation
 - **Environment Isolation**: Secrets, credentials, and host-specific settings MUST be isolated in environment files (`.env`). Standard `.env.example` templates must be maintained in Git.

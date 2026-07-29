@@ -31,8 +31,9 @@ Before creating Dockerfiles or provisioning servers, consult these guidelines:
 - **Execution Protocol & Limits**: `references/orchestrator_execution_protocol.md`
 
 ## Mandatory Deployment Rules
-- **Pure Git Workflow**: Never manually copy-paste application files to remote hosts. Always use `git push`/`git pull` or automated CI/CD.
+- **Pure Git Workflow (No SCP / SFTP)**: Executing `scp`, `sftp`, `rsync`, or direct file transfers of project files/configs to remote hosts is STRICTLY FORBIDDEN. ALWAYS use `git push` -> `git pull` on host or automated CI/CD.
 - **Architecture & Network Verification**: Ensure `.env` isolation, `network_mode`, subnets, and port mapping strictly match `.openspec/system-architecture.md`.
 - **Empirical Verification**: Never report completion without empirical validation (database migration/push, container log check, and HTTP `200 OK` health check).
+
 
 **Action Rule**: If an infrastructure requirement is contradictory or missing target server details, do NOT guess. Fail the task and return a Backpressure error to the Orchestrator requesting clarification.
