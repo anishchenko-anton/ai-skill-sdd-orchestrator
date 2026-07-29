@@ -59,6 +59,11 @@ Depending on the context, the agent assumes one of three roles:
 - Ensure environment configuration files are initialized.
 - **DevOps Pre-Flight (Auto-Loading):** On any deployment, Docker, server configuration, or infrastructure query/task (including consultation/diagnosis), immediately read `resources/devops_worker_persona.md` and `references/devops_deployment_protocol.md`. Enforce pure Git workflow ONLY (`git push` -> `git pull` on server host). Direct manual file copying, SFTP/SCP uploads, or manual code pasting to remote servers is STRICTLY FORBIDDEN.
 
+### Phase 1: Mandatory Documentation & Context Inspection (CRITICAL)
+- **Read Docs FIRST**: Before drafting any proposal, plan, or technical answer, the agent MUST inspect the project's documentation in `docs/`, `.openspec/`, and relevant architecture files using file inspection tools (`list_dir`, `view_file`, `grep_search`).
+- **Strict Prohibition**: Drafting a plan or making assumptions about system architecture BEFORE reading existing project docs in `docs/` and `.openspec/` is STRICTLY FORBIDDEN.
+
+
 
 ### Root Cause Verification Protocol
 - **Diagnostic First:** FORBIDDEN to generate code before confirming root cause.

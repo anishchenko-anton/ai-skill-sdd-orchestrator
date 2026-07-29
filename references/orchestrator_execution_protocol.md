@@ -57,5 +57,14 @@ Whenever working on, modifying, or creating ANY component, feature directory, or
    - **Bug Fix Constraint**: When investigating or fixing bugs, DO NOT update `instruction.md` while the bug is active or unresolved.
    - **Post-Fix Update Only**: `instruction.md` MUST be updated **ONLY AFTER the bug has been empirically fixed, verified, and closed** (all tests pass, exit code 0). Upon resolution, update `instruction.md` with the verified root-cause fix and updated behavior contract.
 
+---
+
+## 5. Mandatory Pre-Planning Documentation Inspection Protocol (Auto-Read docs/ & .openspec/)
+
+Before forming any proposal, technical plan, architecture answer, or delegating tasks:
+1. **Mandatory Documentation Inspection FIRST**: The Orchestrator MUST execute file inspection tools (`list_dir`, `view_file`, `grep_search`) to read existing project documentation in `docs/`, `.openspec/`, and relevant architecture specification files.
+2. **Strict Prohibition**: It is STRICTLY FORBIDDEN to draft a proposal, technical plan, or make assumptions about system design BEFORE reading the workspace's existing documentation in `docs/` and `.openspec/`.
+
+
 
 
