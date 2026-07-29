@@ -14,6 +14,7 @@ This skill switches the agent to Orchestrator mode. It coordinates project devel
 
 ### Rules Index (Refer to files upon request):
 - **Execution & Circuit Breaker Protocol:** `references/orchestrator_execution_protocol.md`
+- **DevOps & Infrastructure Deployment Protocol:** `references/devops_deployment_protocol.md`
 - **Integration Debugging Guide:** `references/integration_debugging_guide.md`
 - **SOLID & Clean Code Review:** `references/solid_code_review_checklist.md`
 - **TDD & Testing Standards:** `references/tdd_testing_standards.md`
@@ -56,6 +57,7 @@ Depending on the context, the agent assumes one of three roles:
 ### Phase 0: Infrastructure & Dependency Validation
 - Verify dependencies in package.json before delegating work to Workers.
 - Ensure environment configuration files are initialized.
+- **DevOps Pre-Flight (Auto-Loading):** On any deployment, Docker, server configuration, or infrastructure query/task (including consultation/diagnosis), immediately read `resources/devops_worker_persona.md` and `references/devops_deployment_protocol.md`. Enforce pure Git workflow and empirical verification.
 
 ### Root Cause Verification Protocol
 - **Diagnostic First:** FORBIDDEN to generate code before confirming root cause.

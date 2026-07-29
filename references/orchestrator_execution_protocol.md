@@ -30,3 +30,12 @@ To prevent resource exhaustion, token drain, and infinite debugging loops across
    - Do NOT guess server credentials, ports, or missing environment configurations.
    - Output a clear, empirical error report to the user in chat (summarizing exact commands, stack traces, and failure points).
    - Explicitly ask the user for clarification, missing credentials, or manual guidance before proceeding.
+
+---
+
+## 3. DevOps & Infrastructure Pre-Flight Protocol
+
+For any task involving server deployment, Docker, Nginx, network setup, or server diagnostics:
+1. **Auto-Load Persona & Guides**: Immediately read `resources/devops_worker_persona.md` and `references/devops_deployment_protocol.md`.
+2. **Git-Driven Only**: Enforce pure Git workflow (`git push`/`git pull`); prohibit manual file copying.
+3. **Empirical Health Verification**: Verify Prisma/DB migrations, inspect logs, and confirm `HTTP 200 OK` before marking tasks complete.
