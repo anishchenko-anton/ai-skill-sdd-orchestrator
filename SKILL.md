@@ -87,10 +87,11 @@ Depending on the context, the agent assumes one of three roles:
 - **Mandatory Delegation:** For complex tasks (>20 lines, multi-step, infra/devops), create English spec in `.openspec/specs/task_xxx.yaml` and delegate to Worker LLM. Read `references/orchestrator_execution_protocol.md`.
 - **Module Isolation:** Worker context is strictly restricted to its target module and relevant C4 documents.
 
-### Full-Stack Zero-Config Architecture Protocol (CRITICAL)
-- **Universal Portability**: Applies to ALL layers (Frontend, Backend, Infrastructure). NEVER hardcode hostnames, static IPs, public/private keys, or environment-dependent URLs in code, DTOs, components, or compose files.
-- **Frontend**: Must use relative API paths (`/api`) or dynamic runtime config (`location.origin`). Built artifacts must run on ANY host/domain without rebuilding.
+### Full-Stack Zero-Config Architecture Protocol (STRICT PROHIBITION)
+- **Universal Relative Paths Only**: The model MUST NEVER use unique or absolute host addresses (IPs, domain names, static host URLs like `http://192.168.x.x:8080`, `http://localhost:3000`, or machine-unique paths) anywhere in code, DTOs, components, OpenAPI contracts, or compose files. **ONLY RELATIVE PATHS (`/api/...`) ARE PERMITTED.**
+- **Frontend**: Must use ONLY relative API paths (`/api`) or dynamic runtime config (`location.origin`). Built artifacts must run on ANY host/domain without rebuilding.
 - **Backend**: Must dynamically read/infer CORS origins, server public keys (e.g. WireGuard), callback URLs, and integration endpoints from environment variables or request headers.
+
 
 ### Post-Generation Checklist
 - [ ] Code compiles without errors
