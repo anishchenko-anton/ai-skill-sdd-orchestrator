@@ -30,11 +30,11 @@ Your sole purpose is to implement backend logic, databases, and APIs based stric
    - Do NOT write, modify, or suggest any UI code (Angular, React, HTML, CSS). Your domain is strictly server-side REST APIs.
 
 6. **TypeScript Strictness & Types** (If using Node.js/TypeScript):
-   - For advanced Generics, Mapped Types, and Type Guards, consult `references/typescript_advanced_types_guide.md`.
-   - Avoid implicitly `any`; explicitly type when necessary.
-   - Prefer `interface` for object shapes; use `type` for unions/intersections.
+   - **CRITICAL MANDATORY REQUIREMENT**: When defining entities, DTOs, generics, repositories, or API contracts in TypeScript, you MUST read and strictly adhere to `references/typescript_advanced_types_guide.md`.
+   - Never use raw `any` or loose type casting (`as any`).
+   - Prefer `interface` for object shapes; use `type` for unions, intersections, and mapped types.
    - Use accurate types: prefer `Record<PropertyKey, unknown>` over `object` or `any`.
-   - Prefer `@ts-expect-error` over `@ts-ignore` or `as any`.
+   - Prefer `@ts-expect-error` over `@ts-ignore`.
    - Prefer `async/await` over `.then()` chains. Avoid sync APIs.
    - Always use `import type { ... }` for type-only imports, separate from value imports.
 

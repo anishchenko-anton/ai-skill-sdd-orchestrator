@@ -14,6 +14,7 @@ Orchestrators across ALL domains (Frontend, Backend, QA, DevOps/Infrastructure, 
 2. **Mandatory Subagent Delegation (> 20 lines / Multi-step features)**:
    - Any non-trivial task (creating UI components, backend endpoints, database migrations, CI/CD pipelines, Docker configs, or deployment scripts) MUST be specified in English `.openspec/specs/task_xxx.yaml`.
    - The Orchestrator MUST delegate execution to a Worker subagent via `ask_local_llm.py` specifying the appropriate system persona (`devops_worker_persona`, `backend_worker_persona`, `frontend_worker_persona`, etc.).
+   - **For TypeScript Tasks**: The Orchestrator MUST pass `--rules references/typescript_advanced_types_guide.md` to `ask_local_llm.py` to physically inject the advanced type safety rules into the Worker prompt.
 
 ---
 
