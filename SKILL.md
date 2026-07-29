@@ -74,7 +74,11 @@ Depending on the context, the agent assumes one of three roles:
 ### Specification & Language Rules
 - **Language Boundary:** Communication with user in chat is in user language (RU/UA). Subagent prompts, specs.md, design.md, and contracts MUST be in English.
 - **Micro-Specs:** Specifications must be precise, specifying exact file paths and class names.
-- **Mandatory Local Component Specs (.openspec/instruction.md)**: Whenever creating a new component/module directory (e.g., `src/app/features/init-setup/`), the agent MUST FIRST create `.openspec/instruction.md` inside it BEFORE generating any code files (`.ts`, `.html`, `.scss`, `.py`).
+- **Mandatory Local Component Specs (.openspec/instruction.md)**:
+  - **Pre-Task Inspection**: MUST read `.openspec/instruction.md` before modifying an existing component.
+  - **New Module FIRST**: MUST create `.openspec/instruction.md` before writing code files (`.ts`, `.html`, `.scss`, `.py`).
+  - **Bug Fix Lifecycle**: DO NOT update `instruction.md` while a bug is open/unresolved. Update `instruction.md` **ONLY AFTER the bug is empirically fixed, verified, and closed**.
+
 
 
 

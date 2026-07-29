@@ -44,9 +44,18 @@ For any task involving server deployment, Docker, Nginx, network setup, or serve
 
 ## 4. Mandatory Component & Module Local Specification Protocol (.openspec/instruction.md)
 
-Whenever creating ANY new component, feature directory, or backend module (e.g. `src/app/features/init-setup/` or `src/modules/auth/`):
-1. **Local `.openspec/` Directory Creation FIRST**: Before writing any implementation code (`.ts`, `.html`, `.css`, `.py`, etc.), the agent MUST create a local `.openspec/` folder inside the target component/module directory.
-2. **Mandatory `instruction.md` File**: Inside `.openspec/`, create `instruction.md` documenting the component's purpose, usage instructions, inputs/outputs, state parameters, and component contracts in English.
-3. **Strict Prohibition**: Generating code files (`.ts`, `.html`, `.scss`, `.py`) in a new module/component directory WITHOUT creating the `.openspec/instruction.md` file first is STRICTLY FORBIDDEN.
+Whenever working on, modifying, or creating ANY component, feature directory, or backend module:
+
+1. **Pre-Task Spec Inspection**:
+   - Before modifying or refactoring an existing module, the agent MUST read `.openspec/instruction.md` in that module directory to understand and align on expected behavior, state management, and contracts.
+
+2. **New Module Creation FIRST**:
+   - Before writing any implementation code (`.ts`, `.html`, `.css`, `.py`, etc.), the agent MUST create `.openspec/instruction.md` inside the target component/module directory FIRST.
+
+3. **Continuous Spec Sync & Bug-Fix Post-Verification Update Rule**:
+   - **Feature Work**: If module logic or interface contracts change during feature development, `instruction.md` MUST be updated to reflect the new state.
+   - **Bug Fix Constraint**: When investigating or fixing bugs, DO NOT update `instruction.md` while the bug is active or unresolved.
+   - **Post-Fix Update Only**: `instruction.md` MUST be updated **ONLY AFTER the bug has been empirically fixed, verified, and closed** (all tests pass, exit code 0). Upon resolution, update `instruction.md` with the verified root-cause fix and updated behavior contract.
+
 
 
