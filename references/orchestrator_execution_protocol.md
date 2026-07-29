@@ -39,3 +39,13 @@ For any task involving server deployment, Docker, Nginx, network setup, or serve
 1. **Auto-Load Persona & Guides**: Immediately read `resources/devops_worker_persona.md` and `references/devops_deployment_protocol.md`.
 2. **Git-Driven Only**: Enforce pure Git workflow (`git push`/`git pull`); prohibit manual file copying.
 3. **Empirical Health Verification**: Verify Prisma/DB migrations, inspect logs, and confirm `HTTP 200 OK` before marking tasks complete.
+
+---
+
+## 4. Mandatory Component & Module Local Specification Protocol (.openspec)
+
+Whenever creating ANY new component, feature directory, or backend module (e.g. `src/app/features/init-setup/` or `src/modules/auth/`):
+1. **Local `.openspec/` Directory Creation FIRST**: Before writing any implementation code (`.ts`, `.html`, `.css`, `.py`, etc.), the agent MUST create a local `.openspec/` folder inside the target component/module directory.
+2. **Required Documentation**: Inside `.openspec/`, create at least `specs.md` (or `design.md`) documenting the component's purpose, inputs/outputs, state parameters, and component contracts in English.
+3. **Strict Prohibition**: Generating code files (`.ts`, `.html`, `.scss`, `.py`) in a new module/component directory WITHOUT creating the local `.openspec/` specification directory first is STRICTLY FORBIDDEN.
+
