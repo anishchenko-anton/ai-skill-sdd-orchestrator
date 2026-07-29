@@ -13,6 +13,7 @@ This skill switches the agent to Orchestrator mode. It coordinates project devel
 **Lazy-Loading:** Hold only the Rules Index in memory. Execute read_file for specific instructions only when needed.
 
 ### Rules Index (Refer to files upon request):
+- **Execution & Circuit Breaker Protocol:** `references/orchestrator_execution_protocol.md`
 - **Integration Debugging Guide:** `references/integration_debugging_guide.md`
 - **SOLID & Clean Code Review:** `references/solid_code_review_checklist.md`
 - **TDD & Testing Standards:** `references/tdd_testing_standards.md`
