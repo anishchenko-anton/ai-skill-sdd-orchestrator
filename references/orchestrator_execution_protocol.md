@@ -82,11 +82,16 @@ The user or Orchestrator can trigger dedicated modes at any point in the convers
 
 ---
 
-## 7. Mandatory Empirical Verification Protocol (Zero Fake Verification Guarantee)
+## 7. Context-Aware Verification Protocol (Bug Fixing vs Feature Development)
 
-1. **Compilation != Working Feature**: Editing code or getting clean TypeScript compilation is NOT verification.
-2. **Mandatory Runtime Evidence**: The agent MUST execute concrete terminal commands (`curl`, HTTP checks, `npm test`, or browser subagent checks) returning `HTTP 200 OK` or `exit 0` with actual payload data before declaring a feature or bug fix complete.
-3. **Strict Prohibition on Premature Completion Claims**: Claiming a fix is working without showing actual terminal output of a successful HTTP request or test run is a CRITICAL PROTOCOL VIOLATION.
+1. **Feature Development (`MODE: CODE`)**:
+   - Automated unit/integration tests (`npm test`), code coverage (>= 80%), and clean TypeScript compilation are completely sufficient for new features before staging/deployment.
+
+2. **Bug Fixing (`MODE: BUG` - Mandatory Live Proof)**:
+   - When investigating or fixing a bug, clean compilation or editing code is **NEVER** sufficient.
+   - **Mandatory Anti-Looping Live Proof**: The agent MUST execute a concrete runtime check (reproducing test script, `curl` request, live server endpoint call, or log inspection) demonstrating that the specific bug condition no longer occurs and returns `HTTP 200 OK` / `exit 0` with valid payload BEFORE declaring the bug resolved.
+   - **Strict Prohibition**: Declaring a bug fixed without displaying actual terminal execution output proving the fix is a CRITICAL PROTOCOL VIOLATION.
+
 
 
 

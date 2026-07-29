@@ -119,12 +119,12 @@ Depending on the context, the agent assumes one of three roles:
 - **Backend**: Must dynamically read/infer CORS origins, server public keys (e.g. WireGuard), callback URLs, and integration endpoints from environment variables or request headers.
 
 
-### Post-Generation Checklist & Empirical Verification Protocol (CRITICAL)
-- [ ] Code compiles without errors
-- [ ] **Empirical Runtime Evidence Required**: Running `curl`, test scripts, or HTTP checks that output `HTTP 200 OK` / `exit 0` with real payload data.
-- [ ] Database migrations and type sync completed if schema changed
-- [ ] Branch coverage >= 80% (scripts/run_coverage.py)
+### Post-Generation Checklist & Context-Aware Verification Protocol (CRITICAL)
+- [ ] **Feature Development (`MODE: CODE`)**: Automated unit/integration tests pass and branch coverage >= 80% (`scripts/run_coverage.py`).
+- [ ] **Bug Fixing (`MODE: BUG`)**: MUST present empirical runtime proof (reproducing test script, `curl` request, or live server check) showing `HTTP 200 OK` / `exit 0` with real payload data before closing the bug.
+- [ ] Database migrations and type sync completed if schema changed.
 
-**STRICT PROHIBITION ON FAKE VERIFICATION**: Code editing or successful compilation is NOT completion. Claiming a fix is working without showing actual terminal output of a successful HTTP test / test run is a CRITICAL PROTOCOL VIOLATION.
+**STRICT PROHIBITION ON FAKE BUG FIXES**: When resolving bugs, code editing or clean compilation is NOT completion. Declaring a bug fixed without displaying actual terminal output proving the fix is a CRITICAL PROTOCOL VIOLATION.
+
 
 
