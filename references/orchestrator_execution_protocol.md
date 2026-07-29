@@ -64,16 +64,21 @@ Whenever working on, modifying, or creating ANY component, feature directory, or
 
 ---
 
-## 5. Mandatory Pre-Planning Documentation Lock (FIRST TOOL CALL MUST READ docs/)
+## 5. Mandatory Pre-Planning Documentation Lock & Strict Compliance Protocol
 
-Before generating ANY proposal, technical plan, architecture answer, or delegating tasks:
+Before generating ANY proposal, technical plan, architecture answer, or writing code:
 
-1. **Mandatory First Tool Call Gate**: The agent's VERY FIRST action in a turn MUST be tool calls (`list_dir` on `docs/` and `view_file` on target documentation like `docs/multi-unit-architecture.md`, `docs/deployment-multi-env.md`).
-2. **Strict Prohibition on Text Generation Before Reading**: Outputting text proposals, architecture assumptions, or code plans BEFORE invoking `view_file` on `docs/` files in the current session is STRICTLY FORBIDDEN.
-3. **Zero Assumption Policy**: Inventing architecture, database schemas, or API endpoints without reading and referencing the authoritative `docs/*.md` files is a CRITICAL PROTOCOL VIOLATION.
+1. **Mandatory First Tool Call Gate**: The agent's VERY FIRST action in a turn MUST be tool calls (`list_dir` on `docs/` / `.openspec/` and `view_file` on target documentation like `.openspec/system-architecture.md`, `docs/*.md`).
+2. **Strict Prohibition on Text Generation Before Reading**: Outputting text proposals, architecture assumptions, or code plans BEFORE invoking `view_file` on `docs/` / `.openspec/` files in the current session is STRICTLY FORBIDDEN.
+3. **Zero Self-Willed Shortcuts Policy (Strict Spec Compliance)**:
+   - The agent MUST NEVER make architectural or design decisions at its own discretion ("на свое усмотрение") or introduce simplified shortcuts (e.g. single-database multi-tenancy) that deviate from or contradict written project documentation.
+   - Whatever is specified in the project documentation MUST be implemented EXACTLY AS WRITTEN ("так как написано").
+4. **Mandatory Pre-Execution Plan Presentation in Chat**:
+   - BEFORE writing or modifying ANY code or creating implementation files, the agent MUST explicitly output in chat:
+     1. **Docs Inspected**: List of specific documentation files read.
+     2. **Documented Requirements**: Clear summary of what the documentation specifies.
+     3. **Execution Plan**: Exact step-by-step implementation plan strictly adhering to the documented specification.
 
-
----
 
 ## 6. Dynamic Mode Switching Protocol
 

@@ -41,12 +41,6 @@ The Orchestrator/DevOps Worker MUST perform empirical validation:
 - **Forbidden**: Hardcoding static runtime-generated keys (e.g., WireGuard public/private keys, ephemeral node IDs, static VPS public IPs) inside `docker-compose.yml`, `Dockerfile`, or static `.env` files.
 - **Mandatory Flow**: Infrastructure design MUST be 100% portable and Zero-Config out-of-the-box. Services MUST dynamically read runtime-generated keys from shared volumes (read-only mounts), init scripts, or internal management APIs so that deployment succeeds automatically on ANY server.
 
-### E. Strict Tenant Isolation & Dynamic Provisioner Guard (CRITICAL ANTI-PATTERN)
-- **Forbidden Shortcut**: Implementing onboarding as single-database multi-tenancy or adding WireGuard peers to a single shared container (`visnet-wg-dev`).
-- **Mandatory Isolation**: Each company/tenant MUST be provisioned as a fully isolated stack: dedicated database container (`visnet-db-{company_id}`) and dedicated WireGuard container (`visnet-wg-{company_id}`).
-- **Provisioner Integration**: Onboarding services must explicitly trigger dynamic container creation via Docker API / `/var/run/docker.sock` or dedicated provisioner workflows.
-
-
 
 ---
 
