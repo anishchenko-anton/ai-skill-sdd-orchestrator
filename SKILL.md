@@ -77,10 +77,11 @@ Depending on the context, the agent assumes one of three roles:
 - Ensure environment configuration files are initialized.
 - **DevOps Pre-Flight (Auto-Loading):** On any deployment, Docker, server configuration, or infrastructure query/task (including consultation/diagnosis), immediately read `resources/devops_worker_persona.md` and `references/devops_deployment_protocol.md`. Enforce pure Git workflow ONLY (`git push` -> `git pull` on server host). Direct manual file copying, SFTP/SCP uploads, or manual code pasting to remote servers is STRICTLY FORBIDDEN.
 
-### Phase 1: Mandatory Documentation & Context Inspection (CRITICAL)
-- **Read Docs FIRST**: Before drafting any proposal, plan, or technical answer, the agent MUST inspect the project's documentation in `docs/`, `.openspec/`, and relevant architecture files using file inspection tools (`list_dir`, `view_file`, `grep_search`).
-- **Strict Prohibition**: Drafting a plan or making assumptions about system architecture BEFORE reading existing project docs in `docs/` and `.openspec/` is STRICTLY FORBIDDEN.
+### Phase 1: Mandatory Documentation & Context Inspection (FIRST TOOL CALL GATE)
+- **First Tool Call Lock**: The agent's VERY FIRST action in a turn MUST be executing `list_dir` / `view_file` on `docs/` and `.openspec/` before generating text plans or proposals.
+- **Strict Prohibition**: Outputting text proposals, architecture assumptions, or code plans BEFORE invoking `view_file` on existing `docs/*.md` files is STRICTLY FORBIDDEN.
 - **Strict Context Isolation (Planner vs Coder)**: The Orchestrator reads all project docs to produce a compact micro-spec (`.openspec/instruction.md` / `task_xxx.yaml`). The Worker Coder LLM receives ONLY this micro-spec, keeping its execution context lightweight, fast, and 100% free of global planning documentation noise.
+
 
 
 

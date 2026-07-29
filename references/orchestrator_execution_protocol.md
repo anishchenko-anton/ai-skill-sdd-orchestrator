@@ -64,11 +64,14 @@ Whenever working on, modifying, or creating ANY component, feature directory, or
 
 ---
 
-## 5. Mandatory Pre-Planning Documentation Inspection Protocol (Auto-Read docs/ & .openspec/)
+## 5. Mandatory Pre-Planning Documentation Lock (FIRST TOOL CALL MUST READ docs/)
 
-Before forming any proposal, technical plan, architecture answer, or delegating tasks:
-1. **Mandatory Documentation Inspection FIRST**: The Orchestrator MUST execute file inspection tools (`list_dir`, `view_file`, `grep_search`) to read existing project documentation in `docs/`, `.openspec/`, and relevant architecture specification files.
-2. **Strict Prohibition**: It is STRICTLY FORBIDDEN to draft a proposal, technical plan, or make assumptions about system design BEFORE reading the workspace's existing documentation in `docs/` and `.openspec/`.
+Before generating ANY proposal, technical plan, architecture answer, or delegating tasks:
+
+1. **Mandatory First Tool Call Gate**: The agent's VERY FIRST action in a turn MUST be tool calls (`list_dir` on `docs/` and `view_file` on target documentation like `docs/multi-unit-architecture.md`, `docs/deployment-multi-env.md`).
+2. **Strict Prohibition on Text Generation Before Reading**: Outputting text proposals, architecture assumptions, or code plans BEFORE invoking `view_file` on `docs/` files in the current session is STRICTLY FORBIDDEN.
+3. **Zero Assumption Policy**: Inventing architecture, database schemas, or API endpoints without reading and referencing the authoritative `docs/*.md` files is a CRITICAL PROTOCOL VIOLATION.
+
 
 ---
 
