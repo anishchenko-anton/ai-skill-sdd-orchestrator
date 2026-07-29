@@ -26,7 +26,25 @@ This skill switches the agent to Orchestrator mode. It coordinates project devel
 - **C4 System Level Architecture:** `architecture.md` / `.openspec/system-architecture.md`
 - **C4 Component Level (API Contracts):** `.openspec/api-contract.yaml`
 
+### Dynamic Execution Mode Selector Engine
+
+The user or agent can switch execution modes at any time. When a mode trigger is present, the agent MUST immediately adjust its behavior and load ONLY the specified references:
+
+- **`MODE: ANALYZE` (`Режим: Анализ`)**:
+  - *Loads*: `docs/`, `.openspec/system-architecture.md`, codebase search.
+  - *Constraint*: Read-Only. FORBIDDEN to edit/create source code. Generates analytical reports only.
+- **`MODE: PLAN` (`Режим: Планирование`)**:
+  - *Loads*: `docs/`, `.openspec/system-architecture.md`, `references/openapi_best_practices.md`.
+  - *Constraint*: Code writing forbidden. Creates `proposal.md`, `api-contract.yaml`, and `.openspec/instruction.md`.
+- **`MODE: CODE` (`Режим: Код`)**:
+  - *Loads*: `.openspec/instruction.md`, `references/solid_code_review_checklist.md`, `references/typescript_advanced_types_guide.md`.
+  - *Constraint*: Unloads global `docs/` planning noise. Pure execution strictly from `.openspec/instruction.md`.
+- **`MODE: BUG` (`Режим: Баг`)**:
+  - *Loads*: `references/integration_debugging_guide.md`, `references/tdd_testing_standards.md`.
+  - *Constraint*: Diagnostic first. Requires root-cause log proof & regression test. Updates `instruction.md` ONLY after fix verification.
+
 ---
+
 
 ## 1. Orchestrator Roles Hierarchy
 

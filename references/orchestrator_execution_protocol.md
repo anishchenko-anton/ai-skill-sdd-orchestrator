@@ -70,6 +70,17 @@ Before forming any proposal, technical plan, architecture answer, or delegating 
 1. **Mandatory Documentation Inspection FIRST**: The Orchestrator MUST execute file inspection tools (`list_dir`, `view_file`, `grep_search`) to read existing project documentation in `docs/`, `.openspec/`, and relevant architecture specification files.
 2. **Strict Prohibition**: It is STRICTLY FORBIDDEN to draft a proposal, technical plan, or make assumptions about system design BEFORE reading the workspace's existing documentation in `docs/` and `.openspec/`.
 
+---
+
+## 6. Dynamic Mode Switching Protocol
+
+The user or Orchestrator can trigger dedicated modes at any point in the conversation:
+- **`MODE: ANALYZE` (`Режим: Анализ`)**: Read-Only codebase investigation. Code changes strictly forbidden.
+- **`MODE: PLAN` (`Режим: Планирование`)**: Architecture design and spec creation. Reads `docs/`, writes `proposal.md`, `api-contract.yaml`, and `.openspec/instruction.md`. Code writing forbidden.
+- **`MODE: CODE` (`Режим: Код`)**: Pure implementation based strictly on `.openspec/instruction.md`. Unloads `docs/` and planning noise. Writes code & verifies build/tests.
+- **`MODE: BUG` (`Режим: Баг`)**: Bug investigation and fix. Diagnostic log proof required. Regression test mandatory. `instruction.md` updated ONLY after fix verification.
+
+
 
 
 
