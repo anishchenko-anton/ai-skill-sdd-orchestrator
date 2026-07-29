@@ -46,3 +46,13 @@ services:
     env_file:
       - .env.production
 ```
+
+## 5. 100% Dynamic Infrastructure & Zero-Config Architecture (CRITICAL)
+NEVER hardcode generated runtime keys, public/private WireGuard keys, fixed host IPs, or server-dependent parameters inside `docker-compose.yml`, `Dockerfile`, or static `.env` files.
+
+- **Anti-pattern**: Hardcoding static WireGuard public keys (`WG_PUBLIC_KEY=xyz`) or fixed node credentials in `.env` or `docker-compose.yml`. When deploying on another VPS or environment, regenerating container state breaks static keys immediately.
+- **Required Pattern**: Always design Zero-Config, environment-agnostic infrastructure:
+  1. **Dynamic Runtime Discovery**: Use shared read-only volumes (e.g., `/etc/wireguard/publickey`) or init-scripts so services dynamically read generated state at startup.
+  2. **Management API / Ephemeral States**: Fetch keys and server parameters dynamically via internal API endpoints or container state inspection.
+  3. **Universal Portability**: Infrastructure configurations MUST work out-of-the-box on ANY VPS/server without requiring manual environment file edits for runtime-generated keys.
+

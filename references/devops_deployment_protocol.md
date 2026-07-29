@@ -35,6 +35,11 @@ The Orchestrator/DevOps Worker MUST perform empirical validation:
 2. **HTTP Endpoints Check**: Perform HTTP GET/POST checks verifying `HTTP 200 OK` on health/application endpoints.
 3. **Log Audit**: Inspect container logs (`docker logs --tail 50`) to ensure zero unhandled exceptions or crash loops.
 
+### D. 100% Dynamic Infrastructure & Zero-Config Architecture (CRITICAL)
+- **Forbidden**: Hardcoding static runtime-generated keys (e.g., WireGuard public/private keys, ephemeral node IDs, static VPS public IPs) inside `docker-compose.yml`, `Dockerfile`, or static `.env` files.
+- **Mandatory Flow**: Infrastructure design MUST be 100% portable and Zero-Config out-of-the-box. Services MUST dynamically read runtime-generated keys from shared volumes (read-only mounts), init scripts, or internal management APIs so that deployment succeeds automatically on ANY server.
+
+
 ---
 
 ## 3. Backpressure & Escalation
