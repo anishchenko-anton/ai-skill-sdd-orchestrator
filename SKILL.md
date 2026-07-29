@@ -57,7 +57,8 @@ Depending on the context, the agent assumes one of three roles:
 ### Phase 0: Infrastructure & Dependency Validation
 - Verify dependencies in package.json before delegating work to Workers.
 - Ensure environment configuration files are initialized.
-- **DevOps Pre-Flight (Auto-Loading):** On any deployment, Docker, server configuration, or infrastructure query/task (including consultation/diagnosis), immediately read `resources/devops_worker_persona.md` and `references/devops_deployment_protocol.md`. Enforce pure Git workflow and empirical verification.
+- **DevOps Pre-Flight (Auto-Loading):** On any deployment, Docker, server configuration, or infrastructure query/task (including consultation/diagnosis), immediately read `resources/devops_worker_persona.md` and `references/devops_deployment_protocol.md`. Enforce pure Git workflow ONLY (`git push` -> `git pull` on server host). Direct manual file copying, SFTP/SCP uploads, or manual code pasting to remote servers is STRICTLY FORBIDDEN.
+
 
 ### Root Cause Verification Protocol
 - **Diagnostic First:** FORBIDDEN to generate code before confirming root cause.
