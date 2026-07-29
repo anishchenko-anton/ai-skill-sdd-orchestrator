@@ -56,3 +56,9 @@ NEVER hardcode generated runtime keys, public/private WireGuard keys, fixed host
   2. **Management API / Ephemeral States**: Fetch keys and server parameters dynamically via internal API endpoints or container state inspection.
   3. **Universal Portability**: Infrastructure configurations MUST work out-of-the-box on ANY VPS/server without requiring manual environment file edits for runtime-generated keys.
 
+## 6. Strict Tenant Isolation & Dynamic Container Provisioning (STRICT ANTI-PATTERN GUARD)
+- **STRICTLY FORBIDDEN**: Using shared multi-tenancy in a single PostgreSQL database or single shared WireGuard container (e.g. `visnet-wg-dev`) as a shortcut for tenant onboarding.
+- **MANDATORY ARCHITECTURE**: Every company/tenant unit MUST be a fully isolated instance with its own dedicated database container (`visnet-db-{company_id}`) and its own dedicated WireGuard container (`visnet-wg-{company_id}`).
+- **Dynamic Provisioner Enforcement**: Onboarding or setup services MUST interact with the Docker API / socket or Provisioner agent to dynamically spawn isolated container stacks per company/tenant. NEVER substitute isolated containers with single-table database inserts or shared WireGuard peers.
+
+
