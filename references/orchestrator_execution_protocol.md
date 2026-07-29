@@ -42,10 +42,11 @@ For any task involving server deployment, Docker, Nginx, network setup, or serve
 
 ---
 
-## 4. Mandatory Component & Module Local Specification Protocol (.openspec)
+## 4. Mandatory Component & Module Local Specification Protocol (.openspec/instruction.md)
 
 Whenever creating ANY new component, feature directory, or backend module (e.g. `src/app/features/init-setup/` or `src/modules/auth/`):
 1. **Local `.openspec/` Directory Creation FIRST**: Before writing any implementation code (`.ts`, `.html`, `.css`, `.py`, etc.), the agent MUST create a local `.openspec/` folder inside the target component/module directory.
-2. **Required Documentation**: Inside `.openspec/`, create at least `specs.md` (or `design.md`) documenting the component's purpose, inputs/outputs, state parameters, and component contracts in English.
-3. **Strict Prohibition**: Generating code files (`.ts`, `.html`, `.scss`, `.py`) in a new module/component directory WITHOUT creating the local `.openspec/` specification directory first is STRICTLY FORBIDDEN.
+2. **Mandatory `instruction.md` File**: Inside `.openspec/`, create `instruction.md` documenting the component's purpose, usage instructions, inputs/outputs, state parameters, and component contracts in English.
+3. **Strict Prohibition**: Generating code files (`.ts`, `.html`, `.scss`, `.py`) in a new module/component directory WITHOUT creating the `.openspec/instruction.md` file first is STRICTLY FORBIDDEN.
+
 
