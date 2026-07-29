@@ -62,4 +62,11 @@ ProblemDetails:
       type: string
       format: uri
       example: "/api/v1/users"
+
+---
+
+## 4. Full-Stack Zero-Config & Dynamic Host Resolution
+- **Relative Server Paths**: In `api-contract.yaml`, specify server URLs as relative paths (e.g. `url: /api`) rather than hardcoding static hostnames or IP addresses (`http://192.168.1.1:3000/api`).
+- **Dynamic Client Integration**: Frontend HTTP clients must resolve API endpoints relative to `window.location.origin` or via dynamic runtime config to ensure 100% portability across environments (local, staging, production, or custom VPS).
+
 ```
