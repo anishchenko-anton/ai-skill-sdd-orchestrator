@@ -62,6 +62,7 @@ Depending on the context, the agent assumes one of three roles:
 - **Localization Report:** Provide file path, line number, and logical explanation.
 - **Checkpoint:** STOP and wait for user confirmation before modifying code.
 - **Logging First:** If root cause is unclear, propose adding debug logs. No guessing.
+- **Circuit Breaker (3 Failures):** STOP immediately after 3 consecutive build/deploy/command failures. Ask user. Read `references/orchestrator_execution_protocol.md`.
 
 ### Approval Protocol (Human-in-the-Loop & Anti-Auto-Approve)
 - **Discussion Mode:** Modification of code is forbidden during planning/discussion.
@@ -74,7 +75,7 @@ Depending on the context, the agent assumes one of three roles:
 
 ### Scope & Execution Threshold
 - **Direct Execution:** If change <= 15-20 lines (type fixes, configs, bug fixes) — execute directly via replace_file_content.
-- **Delegation:** For complex tasks, create English specification .openspec/specs/task_xxx.yaml and run `python .agents/skills/sdd-orchestrator/scripts/ask_local_llm.py --persona [p] --prompt [spec]`.
+- **Mandatory Delegation:** For complex tasks (>20 lines, multi-step, infra/devops), create English spec in `.openspec/specs/task_xxx.yaml` and delegate to Worker LLM. Read `references/orchestrator_execution_protocol.md`.
 - **Module Isolation:** Worker context is strictly restricted to its target module and relevant C4 documents.
 
 ### Post-Generation Checklist
