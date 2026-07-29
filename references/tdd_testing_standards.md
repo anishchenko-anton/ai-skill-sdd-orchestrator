@@ -88,5 +88,5 @@ describe('UserService', () => {
 
 - **Branch Coverage Limit**: Branch coverage must be **>= 80%**.
 - Check coverage before committing code by running:
-  `python .agents/skills/sdd-orchestrator/scripts/run_coverage.py <path_to_report>`
+  `python src/sdd-orchestrator/scripts/run_coverage.py <path_to_report>`
 - If coverage is below 80%, identify untested logical branches (e.g. error handling, null inputs) and write specific tests to cover them.
