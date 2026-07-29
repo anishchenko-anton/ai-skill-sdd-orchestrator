@@ -92,6 +92,18 @@ The user or Orchestrator can trigger dedicated modes at any point in the convers
    - **Mandatory Anti-Looping Live Proof**: The agent MUST execute a concrete runtime check (reproducing test script, `curl` request, live server endpoint call, or log inspection) demonstrating that the specific bug condition no longer occurs and returns `HTTP 200 OK` / `exit 0` with valid payload BEFORE declaring the bug resolved.
    - **Strict Prohibition**: Declaring a bug fixed without displaying actual terminal execution output proving the fix is a CRITICAL PROTOCOL VIOLATION.
 
+---
+
+## 8. Mandatory Pre-Code Explanation Rule for Bug Fixing (MODE: BUG)
+
+Before invoking ANY code editing tool (`replace_file_content`, `multi_replace_file_content`, `write_to_file`) during bug fixing:
+1. **Mandatory Pre-Fix Explanation in Chat FIRST**: The agent MUST explicitly output a concise report in chat containing:
+   - **Root Cause (Причина бага)**: Exact file path, line number, and technical explanation of the failure.
+   - **Proposed Fix Strategy (Что будет сделано)**: Exact description of the proposed logic changes.
+   - **Target Files (Затронутые файлы)**: List of files that will be modified.
+2. **Strict Prohibition**: Silently executing code edit tools during bug resolution without first presenting the root cause and proposed fix plan in chat is STRICTLY FORBIDDEN.
+
+
 
 
 

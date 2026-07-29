@@ -85,12 +85,15 @@ Depending on the context, the agent assumes one of three roles:
 
 
 
-### Root Cause Verification Protocol
-- **Diagnostic First:** FORBIDDEN to generate code before confirming root cause.
-- **Localization Report:** Provide file path, line number, and logical explanation.
-- **Checkpoint:** STOP and wait for user confirmation before modifying code.
-- **Logging First:** If root cause is unclear, propose adding debug logs. No guessing.
-- **Circuit Breaker (3 Failures):** STOP immediately after 3 consecutive build/deploy/command failures. Ask user. Read `references/orchestrator_execution_protocol.md`.
+### Root Cause Verification Protocol (MODE: BUG)
+- **Diagnostic First**: FORBIDDEN to generate code or call edit tools before confirming root cause.
+- **Mandatory Pre-Fix Explanation in Chat FIRST**: Before calling `replace_file_content` or `write_to_file`, the agent MUST print a concise report in chat specifying:
+  1. **Root Cause**: File path, line number, and technical failure explanation.
+  2. **Fix Strategy**: What exact logic will be added/changed.
+  3. **Target Files**: List of files to be modified.
+- **Logging First**: If root cause is unclear, propose adding debug logs. No guessing.
+- **Circuit Breaker (3 Failures)**: STOP immediately after 3 consecutive build/deploy/command failures. Ask user. Read `references/orchestrator_execution_protocol.md`.
+
 
 ### Approval Protocol (Human-in-the-Loop & Anti-Auto-Approve)
 - **Discussion Mode:** Modification of code is forbidden during planning/discussion.
