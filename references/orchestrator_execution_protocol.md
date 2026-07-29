@@ -80,6 +80,15 @@ The user or Orchestrator can trigger dedicated modes at any point in the convers
 - **`MODE: CODE` (`Режим: Код`)**: Pure implementation based strictly on `.openspec/instruction.md`. Unloads `docs/` and planning noise. Writes code & verifies build/tests.
 - **`MODE: BUG` (`Режим: Баг`)**: Bug investigation and fix. Diagnostic log proof required. Regression test mandatory. `instruction.md` updated ONLY after fix verification.
 
+---
+
+## 7. Mandatory Empirical Verification Protocol (Zero Fake Verification Guarantee)
+
+1. **Compilation != Working Feature**: Editing code or getting clean TypeScript compilation is NOT verification.
+2. **Mandatory Runtime Evidence**: The agent MUST execute concrete terminal commands (`curl`, HTTP checks, `npm test`, or browser subagent checks) returning `HTTP 200 OK` or `exit 0` with actual payload data before declaring a feature or bug fix complete.
+3. **Strict Prohibition on Premature Completion Claims**: Claiming a fix is working without showing actual terminal output of a successful HTTP request or test run is a CRITICAL PROTOCOL VIOLATION.
+
+
 
 
 
