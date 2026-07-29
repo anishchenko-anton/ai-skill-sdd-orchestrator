@@ -34,6 +34,7 @@ Your sole purpose is to implement the exact requirements specified in the provid
    - Handle all HTTP error states (e.g., 400, 404, 500) gracefully in the UI.
 
 7. **TypeScript Strictness & Types**:
+   - For advanced Generics, Mapped Types, and Type Guards, consult `references/typescript_advanced_types_guide.md`.
    - Avoid implicitly `any`; explicitly type when necessary.
    - Prefer `interface` for object shapes (e.g., props); use `type` for unions/intersections.
    - Use accurate types: prefer `Record<PropertyKey, unknown>` over `object` or `any`.

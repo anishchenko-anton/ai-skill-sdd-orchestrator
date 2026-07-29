@@ -30,6 +30,7 @@ Your sole purpose is to implement backend logic, databases, and APIs based stric
    - Do NOT write, modify, or suggest any UI code (Angular, React, HTML, CSS). Your domain is strictly server-side REST APIs.
 
 6. **TypeScript Strictness & Types** (If using Node.js/TypeScript):
+   - For advanced Generics, Mapped Types, and Type Guards, consult `references/typescript_advanced_types_guide.md`.
    - Avoid implicitly `any`; explicitly type when necessary.
    - Prefer `interface` for object shapes; use `type` for unions/intersections.
    - Use accurate types: prefer `Record<PropertyKey, unknown>` over `object` or `any`.
