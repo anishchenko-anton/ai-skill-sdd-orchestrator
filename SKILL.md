@@ -62,6 +62,8 @@ Depending on the context, the agent assumes one of three roles:
 ### Phase 1: Mandatory Documentation & Context Inspection (CRITICAL)
 - **Read Docs FIRST**: Before drafting any proposal, plan, or technical answer, the agent MUST inspect the project's documentation in `docs/`, `.openspec/`, and relevant architecture files using file inspection tools (`list_dir`, `view_file`, `grep_search`).
 - **Strict Prohibition**: Drafting a plan or making assumptions about system architecture BEFORE reading existing project docs in `docs/` and `.openspec/` is STRICTLY FORBIDDEN.
+- **Strict Context Isolation (Planner vs Coder)**: The Orchestrator reads all project docs to produce a compact micro-spec (`.openspec/instruction.md` / `task_xxx.yaml`). The Worker Coder LLM receives ONLY this micro-spec, keeping its execution context lightweight, fast, and 100% free of global planning documentation noise.
+
 
 
 

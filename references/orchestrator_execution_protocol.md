@@ -16,7 +16,12 @@ Orchestrators across ALL domains (Frontend, Backend, QA, DevOps/Infrastructure, 
    - The Orchestrator MUST delegate execution to a Worker subagent via `ask_local_llm.py` specifying the appropriate system persona (`devops_worker_persona`, `backend_worker_persona`, `frontend_worker_persona`, etc.).
    - **For TypeScript Tasks**: The Orchestrator MUST pass `--rules references/typescript_advanced_types_guide.md` to `ask_local_llm.py` to physically inject the advanced type safety rules into the Worker prompt.
 
+3. **Strict Context & Phase Isolation Protocol (Planner vs Coder)**:
+   - **Phase 1: Planning (Orchestrator)**: Reads all relevant project documentation (`docs/`, `.openspec/system-architecture.md`, `README.md`) to formulate the design and distills it into a compact, self-contained English micro-spec (`task_xxx.yaml` or `.openspec/instruction.md`).
+   - **Phase 2: Coding (Worker LLM / Subagent)**: The Worker LLM is provided ONLY with the micro-spec (`task_xxx.yaml` / `instruction.md`), target file paths, and coding standards. The Worker LLM MUST NOT load global `docs/` planning noise, preventing context pollution, saving token budget, and eliminating hallucinations.
+
 ---
+
 
 ## 2. Universal Circuit Breaker Protocol (Anti-Looping)
 
