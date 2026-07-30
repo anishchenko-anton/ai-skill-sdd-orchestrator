@@ -28,7 +28,7 @@ Before creating Dockerfiles or provisioning servers, consult these guidelines:
 - **Mandatory Documentation & Protocol Inspection**:
    - You MUST read and strictly adhere to `references/backend_best_practices.md` and `references/devops_deployment_protocol.md`.
    - **Zero-Config Infrastructure**: All Docker containers, Nginx reverse proxies, and WireGuard configurations MUST be 100% Zero-Config and portable. FORBIDDEN to hardcode static IPs, public keys, or server credentials.
-- **Docker Best Practices**: `references/docker_best_practices.md`
+- **Container & Backend Best Practices**: `references/backend_best_practices.md`
 - **Linux Security Checklist**: `references/linux_security_checklist.md`
 - **Execution Protocol & Limits**: `references/orchestrator_execution_protocol.md`
 

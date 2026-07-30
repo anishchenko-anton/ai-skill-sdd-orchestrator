@@ -30,6 +30,10 @@ This document defines mandatory protocols for Orchestrator execution limits, del
    c) **Обязательное делегирование в LM Studio с показом промпта в чате**:
       - For code generation (> 20 lines), the Orchestrator forms the prompt, displays a summary/content of the generated prompt in chat for user inspection, and invokes `ask_local_llm.py` to delegate to LM Studio.
 
+   d) **Физический вызов локальной LLM (No Text Simulation)**:
+      - The Orchestrator MUST NEVER simulate or pretend to call `ask_local_llm.py` by outputting a fake generated code response in chat text.
+      - The Orchestrator MUST physically invoke `run_command` with `python .../ask_local_llm.py` to query LM Studio / Ollama and read the generated file output.
+
 4. **Strict Context & Phase Isolation Protocol (Planner vs Coder)**:
    - **Phase 1: Planning (Orchestrator)**: Reads all relevant project documentation (`docs/`, `.openspec/system-architecture.md`, `README.md`) to formulate the design and creates the required Markdown specs (`.openspec/proposal.md`, `.openspec/design.md`, `.openspec/instruction.md`).
    - **Pre-Delegation Spec Gate (STRICT)**: The Orchestrator MUST NEVER call `ask_local_llm.py` or delegate tasks to a Worker LLM/subagent until the Markdown spec files are physically written to `.openspec/` AND explicit textual approval has been granted by the human user in chat. Calling Worker LLM directly without pre-written Markdown specs is a CRITICAL PROTOCOL VIOLATION.
