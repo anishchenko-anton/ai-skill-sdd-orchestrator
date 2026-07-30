@@ -48,7 +48,8 @@ Never hardcode secrets or environment-specific config inside `Dockerfile` or `do
 
 NEVER hardcode generated runtime keys, public/private WireGuard keys, fixed host IPs, subnet CIDRs, or server-dependent parameters inside `docker-compose.yml`, `Dockerfile`, static `.env` files, or backend string templates (e.g. `confContent`).
 
-- **Anti-pattern**: Hardcoding static WireGuard public keys (`WG_PUBLIC_KEY=xyz`), fixed node IPs (`192.168.121.2`), server public endpoints (`147.135.208.25:51821`), or CIDR subnets (`192.168.121.0/24`) in backend source code, DTOs, or `.env` files. When deploying on another VPS or subnet, static IPs break connectivity immediately.
+- **Anti-pattern**: Hardcoding static WireGuard public keys (`WG_PUBLIC_KEY=xyz`), fixed node IPs (`192.168.121.2`), server public endpoints (`147.135.208.25:51821`), or CIDR subnets (`192.168.121.0/24`) in backend source code, DTOs, or `.env` files.
+- **PROHIBITION OF FALLBACK IP LITERALS (STRICT)**: Using static IP strings as fallback defaults in code (e.g. `process.env.WG_CLIENT_IP || '192.168.121.2'`, `process.env.WG_ALLOWED_IPS || '192.168.121.0/24'`) is STRICTLY FORBIDDEN. If required configuration is missing, the system MUST throw an explicit error or calculate values dynamically — NEVER silently default to hardcoded IP literals.
 - **Required Pattern**: Always design Zero-Config, environment-agnostic infrastructure:
   1. **Dynamic Runtime Discovery**: Use shared read-only volumes (e.g., `/etc/wireguard/publickey`) or init-scripts so services dynamically read generated state at startup.
   2. **Dynamic Network & Config Templates**: Populate WireGuard configuration templates (`.conf`) dynamically using environment variables (`WG_SERVER_ENDPOINT`, `WG_SUBNET_CIDR`, `SERVER_PUBLIC_IP`) or dynamic IP allocator services.
