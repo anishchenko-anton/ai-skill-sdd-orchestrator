@@ -26,15 +26,22 @@ Check-File -Path "$projectRoot\.openspec\system-architecture.md" -Name "system-a
 Write-Host "`n3. Checking dependent skills..."
 Check-File -Path "$projectRoot\.agents\skills\frontend-design\SKILL.md" -Name "frontend-design" -Tip "Install frontend-design skill"
 
-Write-Host "`n4. Checking local LLM (Ollama)..."
-$ollamaOk = $false
-$response = Invoke-RestMethod -Uri "http://localhost:11434/api/tags" -Method Get -TimeoutSec 3 -ErrorAction SilentlyContinue
-if ($null -ne $response) {
-    Write-Host "[OK] Ollama is running." -ForegroundColor Green
-    $ollamaOk = $true
+Write-Host "`n4. Checking local LLM (LM Studio / Ollama)..."
+$localLlmOk = $false
+$lmStudioRes = Invoke-RestMethod -Uri "http://localhost:1234/v1/models" -Method Get -TimeoutSec 3 -ErrorAction SilentlyContinue
+if ($null -ne $lmStudioRes) {
+    Write-Host "[OK] LM Studio is running on port 1234." -ForegroundColor Green
+    $localLlmOk = $true
 }
 else {
-    Write-Host "[ERROR] Ollama is NOT responding." -ForegroundColor Red
+    $ollamaRes = Invoke-RestMethod -Uri "http://localhost:11434/api/tags" -Method Get -TimeoutSec 3 -ErrorAction SilentlyContinue
+    if ($null -ne $ollamaRes) {
+        Write-Host "[OK] Ollama is running on port 11434." -ForegroundColor Green
+        $localLlmOk = $true
+    }
+    else {
+        Write-Host "[ERROR] Neither LM Studio (port 1234) nor Ollama (port 11434) is responding." -ForegroundColor Red
+    }
 }
 
 Write-Host "`n5. Checking Python (Required for Execution scripts)..."
@@ -49,7 +56,7 @@ else {
 }
 
 Write-Host "`n=================================================="
-if ($allPassed -and $ollamaOk) {
+if ($allPassed -and $localLlmOk) {
     Write-Host "[SUCCESS] All checks passed! SDD environment is ready." -ForegroundColor Green
 }
 else {

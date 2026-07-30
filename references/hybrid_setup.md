@@ -34,41 +34,36 @@
 
 ---
 
-## 2. Настройка скрипта интеграции (`ask_local_llm.py`)
+## 2. Использование скрипта интеграции (`ask_local_llm.py`)
 
-На Слое 3 (Execution) агент-оркестратор вызывает локальный скрипт `ask_local_llm.py`. Ниже представлен пример того, как скрипт взаимодействует с Ollama API:
+На Слое 3 (Execution) агент-оркестратор вызывает локальный скрипт `ask_local_llm.py`. Скрипт поддерживает как **LM Studio**, так и **Ollama** с автоматическим обнаружением работающего локального сервера.
+
+### Команды вызова `ask_local_llm.py`:
+
+```bash
+# Автоматическое определение (сначала LM Studio на порту 1234, затем Ollama на 11434)
+python scripts/ask_local_llm.py --prompt prompts/devops_task.md --out output.code
+
+# Явное указание LM Studio
+python scripts/ask_local_llm.py --provider lmstudio --prompt prompts/devops_task.md --out output.code
+
+# С передачей дополнительных правил фреймворка
+python scripts/ask_local_llm.py --provider lmstudio --prompt prompt.md --rules references/backend_best_practices.md --out code.py
+```
+
+### Формат обращения к LM Studio API (OpenAI Compatible):
 
 ```python
-import urllib.request
-import json
-import sys
-
-def generate_code_via_ollama(prompt, model_name="qwen2.5-coder:7b"):
-    url = "http://localhost:11434/api/generate"
-    payload = {
-        "model": model_name,
-        "prompt": prompt,
-        "stream": False,
-        "options": {
-            "temperature": 0.2, # Низкая температура для точной генерации кода
-            "num_predict": 2048 # Максимальная длина ответа
-        }
-    }
-    
-    headers = {"Content-Type": "application/json"}
-    req = urllib.request.Request(
-        url, 
-        data=json.dumps(payload).encode("utf-8"), 
-        headers=headers
-    )
-    
-    try:
-        with urllib.request.urlopen(req, timeout=120) as response:
-            result = json.loads(response.read().decode("utf-8"))
-            return result.get("response", "")
-    except Exception as e:
-        print(f"Ошибка соединения с локальной LLM: {e}", file=sys.stderr)
-        return None
+# Эндпоинт LM Studio по умолчанию: http://localhost:1234/v1/chat/completions
+payload = {
+    "model": "local-model", # В LM Studio по умолчанию используется загруженная модель
+    "messages": [
+        {"role": "system", "content": rules_text},
+        {"role": "user", "content": prompt_text}
+    ],
+    "temperature": 0.2,
+    "stream": False
+}
 ```
 
 ---
