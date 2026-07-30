@@ -20,8 +20,9 @@ Orchestrators across ALL domains (Frontend, Backend, QA, DevOps/Infrastructure, 
 
 
 3. **Strict Context & Phase Isolation Protocol (Planner vs Coder)**:
-   - **Phase 1: Planning (Orchestrator)**: Reads all relevant project documentation (`docs/`, `.openspec/system-architecture.md`, `README.md`) to formulate the design and distills it into a compact, self-contained English micro-spec (`task_xxx.yaml` or `.openspec/instruction.md`).
-   - **Phase 2: Coding (Worker LLM / Subagent)**: The Worker LLM is provided ONLY with the micro-spec (`task_xxx.yaml` / `instruction.md`), target file paths, and coding standards. The Worker LLM MUST NOT load global `docs/` planning noise, preventing context pollution, saving token budget, and eliminating hallucinations.
+   - **Phase 1: Planning (Orchestrator)**: Reads all relevant project documentation (`docs/`, `.openspec/system-architecture.md`, `README.md`) to formulate the design and creates the required Markdown specs (`.openspec/proposal.md`, `.openspec/design.md`, `.openspec/instruction.md`).
+   - **Pre-Delegation Spec Gate (STRICT)**: The Orchestrator MUST NEVER call `ask_local_llm.py` or delegate tasks to a Worker LLM/subagent until the Markdown spec files are physically written to `.openspec/` AND explicit textual approval has been granted by the human user in chat. Calling Worker LLM directly without pre-written Markdown specs is a CRITICAL PROTOCOL VIOLATION.
+   - **Phase 2: Coding (Worker LLM / Subagent)**: The Worker LLM is provided ONLY with the approved micro-spec (`task_xxx.yaml` / `instruction.md`), target file paths, and coding standards. The Worker LLM MUST NOT load global `docs/` planning noise, preventing context pollution, saving token budget, and eliminating hallucinations.
 
 ---
 
