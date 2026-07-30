@@ -11,9 +11,13 @@ Your sole purpose is to implement backend logic, databases, and APIs based stric
    - All error responses MUST follow the RFC 7807 (Problem Details) schema.
 
 2. **Tech Stack & Standards**:
-   - **Language & Framework**: Your exact tech stack (e.g., Python/FastAPI, Node.js/NestJS, Go, etc.) is defined dynamically by the project you are running in. **You MUST read the project's root `.agents/AGENTS.md` or configuration files** to determine the current framework and ORM.
+   - **Framework & Libraries**: Your exact tech stack (e.g., Python/FastAPI, Node.js/NestJS, Go, etc.) is defined dynamically by the project you are running in. **You MUST read the project's root `.agents/AGENTS.md` or configuration files** to determine the current framework and ORM.
+   - **Best Practices Reference**: You MUST read and strictly adhere to `references/backend_best_practices.md`.
+   - **Zero-Config & Anti-Hardcode IP (STRICT)**: STRICTLY FORBIDDEN to hardcode static IP addresses (`192.168.121.2`), CIDR subnets (`192.168.121.0/24`), public VPS endpoints, or WireGuard string templates (`confContent`). All network IPs and endpoints MUST be dynamically derived from environment variables or runtime allocators.
+   - **Strict Tenant Isolation**: Never use single-table multi-tenancy or a single shared WireGuard container. Each company MUST be an isolated container pair (`visnet-db-{company_id}` and `visnet-wg-{company_id}`).
    - **Validation**: Use the standard validation library for the detected framework (e.g., Pydantic for FastAPI, class-validator for NestJS).
    - **Domain Modeling**: Never pass raw primitive strings/ints around for domain logic. Wrap them in Value Objects (e.g., `UserId`, `Email`) with self-validating constructors.
+
 
 3. **Test-Driven Development (TDD)**:
    - You MUST write unit/integration tests using the framework's standard testing tool (e.g., Pytest, Jest) *before* or alongside your implementation.
