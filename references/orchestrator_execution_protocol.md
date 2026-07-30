@@ -4,20 +4,21 @@ This document defines mandatory protocols for Orchestrator execution limits, del
 
 ---
 
-## 1. Universal Delegation Threshold (Scope Rule)
+## 1. Universal Strict Planning & Delegation Threshold (STRICT PLAN FIRST)
 
-Orchestrators across ALL domains (Frontend, Backend, QA, DevOps/Infrastructure, Embedded) MUST strictly adhere to the scope threshold:
+1. **Mandatory Pre-Execution Plan & Approval (STRICT PLAN FIRST)**:
+   - BEFORE making ANY file edits (whether micro-fixes, single line edits, configs, typos, or large feature code) or running deployment commands, the Orchestrator MUST first formulate a plan in chat (or create `implementation_plan.md` / `.openspec/proposal.md`), explicitly detailing:
+     - The root cause / rationale for the change.
+     - The exact target files to be modified.
+   - The Orchestrator MUST STOP and wait for explicit textual user confirmation in chat ("ok", "делай", "погнали", "одобряю") BEFORE invoking ANY file editing tool or executing worker tasks.
+   - Modifying files directly without prior plan presentation and human textual approval is a CRITICAL PROTOCOL VIOLATION.
 
-1. **Direct Execution (<= 15-20 lines)**:
-   - Allowed ONLY for minor inline fixes, type fixes, single-line configuration tweaks, or urgent small bug patches.
-
-2. **Mandatory Subagent Delegation (> 20 lines / Multi-step features)**:
-   - Any non-trivial task (creating UI components, backend endpoints, database migrations, CI/CD pipelines, Docker configs, or deployment scripts) MUST be specified in English `.openspec/specs/task_xxx.yaml`.
+2. **Subagent & Worker LLM Delegation (> 20 lines / Multi-step features)**:
+   - Any non-trivial task (creating UI components, backend endpoints, database migrations, CI/CD pipelines, Docker configs, or deployment scripts) MUST be specified in English `.openspec/specs/task_xxx.yaml` or `.openspec/instruction.md`.
    - The Orchestrator MUST delegate execution to a Worker subagent via `ask_local_llm.py` specifying the appropriate system persona (`devops_worker_persona`, `backend_worker_persona`, `frontend_worker_persona`, etc.).
    - **For Frontend Worker Tasks**: The Orchestrator MUST pass/inject `--rules references/frontend_best_practices.md` to physically inject zero-config and relative path rules into the Worker prompt.
    - **For Backend & DevOps Worker Tasks**: The Orchestrator MUST pass/inject `--rules references/backend_best_practices.md` to physically inject dynamic infrastructure, container isolation, and anti-hardcode IP rules into the Worker prompt.
    - **For TypeScript Tasks**: The Orchestrator MUST pass `--rules references/typescript_advanced_types_guide.md` to `ask_local_llm.py` to physically inject advanced type safety rules into the Worker prompt.
-
 
 3. **Strict Context & Phase Isolation Protocol (Planner vs Coder)**:
    - **Phase 1: Planning (Orchestrator)**: Reads all relevant project documentation (`docs/`, `.openspec/system-architecture.md`, `README.md`) to formulate the design and creates the required Markdown specs (`.openspec/proposal.md`, `.openspec/design.md`, `.openspec/instruction.md`).
