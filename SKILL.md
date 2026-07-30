@@ -15,6 +15,8 @@ This skill switches the agent to Orchestrator mode. It coordinates project devel
 ### Rules Index (Refer to files upon request):
 - **Execution & Circuit Breaker Protocol:** `references/orchestrator_execution_protocol.md`
 - **DevOps & Infrastructure Deployment Protocol:** `references/devops_deployment_protocol.md`
+- **Backend & Container Best Practices:** `references/backend_best_practices.md`
+- **Frontend & Zero-Config API Best Practices:** `references/frontend_best_practices.md`
 - **Integration Debugging Guide:** `references/integration_debugging_guide.md`
 - **SOLID & Clean Code Review:** `references/solid_code_review_checklist.md`
 - **TDD & Testing Standards:** `references/tdd_testing_standards.md`
