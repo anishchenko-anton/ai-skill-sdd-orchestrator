@@ -19,8 +19,18 @@ This document defines mandatory protocols for Orchestrator execution limits, del
    - **For Frontend Worker Tasks**: The Orchestrator MUST pass/inject `--rules references/frontend_best_practices.md` to physically inject zero-config and relative path rules into the Worker prompt.
    - **For Backend & DevOps Worker Tasks**: The Orchestrator MUST pass/inject `--rules references/backend_best_practices.md` to physically inject dynamic infrastructure, container isolation, and anti-hardcode IP rules into the Worker prompt.
    - **For TypeScript Tasks**: The Orchestrator MUST pass `--rules references/typescript_advanced_types_guide.md` to `ask_local_llm.py` to physically inject advanced type safety rules into the Worker prompt.
+3. **Three Mandatory Pillars of SDD Execution**:
 
-3. **Strict Context & Phase Isolation Protocol (Planner vs Coder)**:
+   a) **Сначала Спецификация (Mandatory Contract First)**:
+      - Forbidden to delegate or write ANY implementation code (`.ts`, `.html`, `.py`, etc.) without a pre-written contract/spec file (`.openspec/instruction.md` or `.openspec/specs/task_xxx.yaml`).
+
+   b) **Сначала Тест (TDD Red Phase)**:
+      - Before writing implementation code, the Worker or Orchestrator MUST first write a failing unit/integration test (`*.spec.ts`, `test_*.py`) defining the expected behavior, and verify that the test fails (Red Phase) prior to writing passing code.
+
+   c) **Обязательное делегирование в LM Studio с показом промпта в чате**:
+      - For code generation (> 20 lines), the Orchestrator forms the prompt, displays a summary/content of the generated prompt in chat for user inspection, and invokes `ask_local_llm.py` to delegate to LM Studio.
+
+4. **Strict Context & Phase Isolation Protocol (Planner vs Coder)**:
    - **Phase 1: Planning (Orchestrator)**: Reads all relevant project documentation (`docs/`, `.openspec/system-architecture.md`, `README.md`) to formulate the design and creates the required Markdown specs (`.openspec/proposal.md`, `.openspec/design.md`, `.openspec/instruction.md`).
    - **Pre-Delegation Spec Gate (STRICT)**: The Orchestrator MUST NEVER call `ask_local_llm.py` or delegate tasks to a Worker LLM/subagent until the Markdown spec files are physically written to `.openspec/` AND explicit textual approval has been granted by the human user in chat. Calling Worker LLM directly without pre-written Markdown specs is a CRITICAL PROTOCOL VIOLATION.
    - **Phase 2: Coding (Worker LLM / Subagent)**: The Worker LLM is provided ONLY with the approved micro-spec (`task_xxx.yaml` / `instruction.md`), target file paths, and coding standards. The Worker LLM MUST NOT load global `docs/` planning noise, preventing context pollution, saving token budget, and eliminating hallucinations.

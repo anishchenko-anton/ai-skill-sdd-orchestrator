@@ -118,7 +118,9 @@ Depending on the context, the agent assumes one of three roles:
 
 ### Scope & Execution Threshold (STRICT PLAN FIRST)
 - **Mandatory Pre-Execution Plan (STRICT PLAN FIRST):** BEFORE making ANY file edits (even 1-line edits, typos, or micro-fixes) or deployment commands, the agent MUST present a plan in chat, list target files, and STOP to receive explicit human textual confirmation ("ok", "делай", "погнали", "одобряю").
-- **Mandatory Worker Delegation:** For complex tasks (>20 lines, multi-step, infra/devops), write English spec in `.openspec/specs/task_xxx.yaml` and delegate to Worker LLM via `ask_local_llm.py`. Read `references/orchestrator_execution_protocol.md`.
+- **1. Сначала Спецификация (`.openspec/instruction.md`):** Запрещено передавать задачу в разработку без созданного файла контракта/инструкции.
+- **2. Сначала Тест (TDD Red Phase):** Сначала создается падающий тест `*.spec.ts` / `test_*.py` до написания кода реализации.
+- **3. Обязательное делегирование в LM Studio:** Формирование промпта и отправка задачи локальной LLM через `ask_local_llm.py` с обязательным предварительным отображением промпта в чате.
 - **Module Isolation:** Worker context is strictly restricted to its target module and relevant C4 documents.
 
 ### Full-Stack Zero-Config Architecture Protocol (STRICT PROHIBITION)
