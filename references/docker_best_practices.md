@@ -48,11 +48,12 @@ services:
 ```
 
 ## 5. 100% Dynamic Infrastructure & Zero-Config Architecture (CRITICAL)
-NEVER hardcode generated runtime keys, public/private WireGuard keys, fixed host IPs, or server-dependent parameters inside `docker-compose.yml`, `Dockerfile`, or static `.env` files.
+NEVER hardcode generated runtime keys, public/private WireGuard keys, fixed host IPs, subnet CIDRs, or server-dependent parameters inside `docker-compose.yml`, `Dockerfile`, static `.env` files, or backend string templates (e.g. `confContent`).
 
-- **Anti-pattern**: Hardcoding static WireGuard public keys (`WG_PUBLIC_KEY=xyz`) or fixed node credentials in `.env` or `docker-compose.yml`. When deploying on another VPS or environment, regenerating container state breaks static keys immediately.
+- **Anti-pattern**: Hardcoding static WireGuard public keys (`WG_PUBLIC_KEY=xyz`), fixed node IPs (`192.168.121.2`), server public endpoints (`147.135.208.25:51821`), or CIDR subnets (`192.168.121.0/24`) in source code or `.env` files. When deploying on another VPS or subnet, static IPs break connectivity immediately.
 - **Required Pattern**: Always design Zero-Config, environment-agnostic infrastructure:
   1. **Dynamic Runtime Discovery**: Use shared read-only volumes (e.g., `/etc/wireguard/publickey`) or init-scripts so services dynamically read generated state at startup.
-  2. **Management API / Ephemeral States**: Fetch keys and server parameters dynamically via internal API endpoints or container state inspection.
-  3. **Universal Portability**: Infrastructure configurations MUST work out-of-the-box on ANY VPS/server without requiring manual environment file edits for runtime-generated keys.
+  2. **Dynamic Network & Config Templates**: Populate WireGuard configuration templates (`.conf`) dynamically using environment variables (`WG_SERVER_ENDPOINT`, `WG_SUBNET_CIDR`, `SERVER_PUBLIC_IP`) or dynamic IP allocator services.
+  3. **Universal Portability**: Infrastructure configurations MUST work out-of-the-box on ANY VPS/server without requiring manual environment file edits or code changes for IP addresses.
+
 
