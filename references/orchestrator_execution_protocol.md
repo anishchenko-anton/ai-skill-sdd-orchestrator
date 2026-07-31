@@ -27,8 +27,10 @@ This document defines mandatory protocols for Orchestrator execution limits, del
    b) **Сначала Тест (TDD Red Phase)**:
       - Before writing implementation code, the Worker or Orchestrator MUST first write a failing unit/integration test (`*.spec.ts`, `test_*.py`) defining the expected behavior, and verify that the test fails (Red Phase) prior to writing passing code.
 
-   c) **Обязательное делегирование в LM Studio с показом промпта в чате**:
-      - For code generation (> 20 lines), the Orchestrator forms the prompt, displays a summary/content of the generated prompt in chat for user inspection, and invokes `ask_local_llm.py` to delegate to LM Studio.
+   c) **DEFAULT: Strict Local LLM Delegation Only (По умолчанию только локальная LLM)**:
+      - BY DEFAULT, ALL code writing, component creation, refactoring, and file generation MUST be executed STRICTLY by querying the local LLM (Ollama / LM Studio) via `python scripts/ask_local_llm.py`.
+      - **Sole Exception ("Сделай сам")**: The Orchestrator is ONLY allowed to write implementation code files directly using IDE tools IF AND ONLY IF the user explicitly orders in chat: *"сделай сам"*, *"делай сам"*, or *"пиши сам"*.
+      - Without this explicit command, direct implementation code writing by the Orchestrator is STRICTLY FORBIDDEN.
 
    d) **Физический вызов локальной LLM (No Text Simulation)**:
       - The Orchestrator MUST NEVER simulate or pretend to call `ask_local_llm.py` by outputting a fake generated code response in chat text.
