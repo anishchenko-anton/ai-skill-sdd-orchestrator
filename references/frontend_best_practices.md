@@ -25,3 +25,10 @@ This guide outlines standard frontend engineering guidelines for web application
 
 - **State Isolation**: Use reactive state management (Signals, NgRx, Redux, Zustand) for shared application state. Keep transient view state inside local components.
 - **Error Handling**: Gracefully intercept HTTP errors (e.g., 401, 403, 500) using global interceptors and present user-friendly notifications.
+
+---
+
+## 4. Mandatory Build Versioning & Visible Build Tagging (CRITICAL)
+
+- **MANDATORY VISIBLE BUILD TAG**: Whenever modifying, updating, or deploying a frontend or web application (feature update, UI change, or hotfix), the Orchestrator and Worker **MUST** increment the build version / version tag (e.g. `v1.0.1-build24`, Git SHA, or build timestamp) and ensure it is clearly displayed in a visible UI location (e.g. footer, sidebar, header, or settings modal).
+- **EMPIRICAL VISUAL VERIFICATION**: Changing the visible build tag on every update is mandatory so that the user can immediately see and verify that the latest build has successfully deployed and rendered on the client side.

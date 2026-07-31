@@ -47,6 +47,10 @@ The Orchestrator/DevOps Worker MUST perform empirical validation:
 - **MUST** extract and inspect direct live server runtime logs (`docker logs --tail 100`, `/var/log/nginx/error.log`, or `journalctl -u <service>`).
 - Formulating fixes without empirical log proof extracted directly from the affected server is a CRITICAL PROTOCOL VIOLATION.
 
+### F. Mandatory Build Version Increment & Visual Build Tagging
+- **STRICT REQUIREMENT**: Upon every deployment, rebuild, or bug fix release, the Orchestrator/Worker **MUST** increment the application build version / version tag (e.g. `v1.0.1-b42` or build timestamp) in the project configuration and visible UI components.
+- **PURPOSE**: Ensures the user and team can visually verify on the live site/server that the new build is deployed and running, without ambiguity.
+
 ---
 
 ## 3. Backpressure & Escalation
