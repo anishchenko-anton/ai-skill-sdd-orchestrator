@@ -41,6 +41,11 @@ The Orchestrator/DevOps Worker MUST perform empirical validation:
 - **Forbidden**: Hardcoding static runtime-generated keys (e.g., WireGuard public/private keys, ephemeral node IDs, static VPS public IPs) inside `docker-compose.yml`, `Dockerfile`, or static `.env` files.
 - **Mandatory Flow**: Infrastructure design MUST be 100% portable and Zero-Config out-of-the-box. Services MUST dynamically read runtime-generated keys from shared volumes (read-only mounts), init scripts, or internal management APIs so that deployment succeeds automatically on ANY server.
 
+### E. Mandatory Live Log Extraction Before Fix Generation (Remote Debugging)
+- **STRICT REQUIREMENT**: Before attempting to propose or apply fixes for Nginx, Docker, WebSocket 502/504 errors, or server infrastructure issues on dev/staging/production hosts:
+- **NEVER** write or apply fixes based solely on local code analysis or static Nginx configuration files.
+- **MUST** extract and inspect direct live server runtime logs (`docker logs --tail 100`, `/var/log/nginx/error.log`, or `journalctl -u <service>`).
+- Formulating fixes without empirical log proof extracted directly from the affected server is a CRITICAL PROTOCOL VIOLATION.
 
 ---
 

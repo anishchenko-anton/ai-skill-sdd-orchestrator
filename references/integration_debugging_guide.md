@@ -6,15 +6,20 @@ This guide defines the mandatory protocol for diagnosing and resolving bugs at t
 
 ## 1. API-First Verification Protocol
 
-When a bug occurs in feature functionality involving client-server communication, **Orchestrators and Workers are STRICTLY FORBIDDEN from modifying UI components or Backend services before inspecting the empirical API response.**
+When a bug occurs in feature functionality involving client-server communication, **Orchestrators and Workers are STRICTLY FORBIDDEN from modifying UI components or Backend services before inspecting the empirical API response and live runtime logs.**
 
 ### Mandatory Diagnostic Sequence
 
-1. **Step 1: Inspect Raw HTTP Response**:
+1. **Step 1: Direct Server & Gateway Log Extraction (CRITICAL)**:
+   - When diagnosing errors occurring on or involving remote/dev servers (e.g., Nginx 502 Bad Gateway, WebSocket handshake failures, service crashes, proxy routing issues):
+   - **NEVER** write or apply fixes based strictly on local code analysis or static Nginx configuration files alone.
+   - **MUST** first collect live, direct runtime log evidence directly from the remote server (e.g., `ssh` to inspect `/var/log/nginx/error.log`, `docker logs --tail 100`, or systemd/journalctl logs).
+
+2. **Step 2: Inspect Raw HTTP Response**:
    - Perform a direct API call (via `curl`, CLI, or inspect Network logs).
    - Capture status code, headers, and exact JSON response payload.
 
-2. **Step 2: Validate Against `api-contract.yaml`**:
+3. **Step 3: Validate Against `api-contract.yaml`**:
    Compare the actual HTTP response against the OpenAPI contract in `.openspec/api-contract.yaml`:
 
 | Condition / API Response | Target Subagent | Action Required |
