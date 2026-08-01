@@ -5,6 +5,12 @@ import urllib.request
 import urllib.parse
 import argparse
 
+try:
+    import tiktoken
+    _TIKTOKEN_AVAILABLE = True
+except ImportError:
+    _TIKTOKEN_AVAILABLE = False
+
 # Allow importing notify_telegram from the same directory
 current_dir = os.path.dirname(os.path.abspath(__file__))
 if current_dir not in sys.path:
@@ -42,6 +48,36 @@ def detect_provider():
 
     return None, None
 
+def _count_and_report_tokens(final_prompt: str, rules_text: str, prompt_text: str, encoding_name: str) -> None:
+    """Print token counts for the composed prompt using tiktoken."""
+    if not _TIKTOKEN_AVAILABLE:
+        print("⚠️  tiktoken is not installed. Run: pip install tiktoken", file=sys.stderr)
+        return
+
+    try:
+        enc = tiktoken.get_encoding(encoding_name)
+    except Exception as e:
+        print(f"⚠️  Unknown tiktoken encoding '{encoding_name}': {e}", file=sys.stderr)
+        return
+
+    def count(text: str) -> int:
+        return len(enc.encode(text))
+
+    total = count(final_prompt)
+    lines = [
+        f"📊 Token count  (encoding: {encoding_name})",
+        "─" * 44,
+    ]
+    if rules_text:
+        lines.append(f"  rules   : {count(rules_text):>8,} tokens")
+    lines.append(    f"  prompt  : {count(prompt_text):>8,} tokens")
+    if rules_text:
+        lines.append(f"  separator: {'2':>7} tokens")
+    lines.append(    "─" * 44)
+    lines.append(    f"  TOTAL   : {total:>8,} tokens")
+    print("\n".join(lines))
+
+
 def main():
     parser = argparse.ArgumentParser(description="Query local LLM (LM Studio / Ollama) and save output to a clean UTF-8 file.")
     parser.add_argument("--model", required=False, default="local-model", help="Model name (e.g. qwen2.5-coder:7b or local-model for LM Studio)")
@@ -50,7 +86,9 @@ def main():
     parser.add_argument("--out", required=True, help="Path to save the generated output (UTF-8)")
     parser.add_argument("--provider", choices=["auto", "lmstudio", "ollama"], default="auto", help="Local LLM provider (default: auto)")
     parser.add_argument("--url", required=False, help="Custom endpoint URL override")
-    
+    parser.add_argument("--count-tokens", action="store_true", help="Count tokens in the composed prompt via tiktoken and exit (no LLM request)")
+    parser.add_argument("--token-encoding", default="cl100k_base", help="tiktoken encoding to use (default: cl100k_base)")
+
     args = parser.parse_args()
     
     if not os.path.exists(args.prompt):
@@ -77,6 +115,10 @@ def main():
             sys.exit(1)
             
     final_prompt = f"{rules_text}\n\n{prompt_text}" if rules_text else prompt_text
+
+    if args.count_tokens:
+        _count_and_report_tokens(final_prompt, rules_text, prompt_text, args.token_encoding)
+        sys.exit(0)
         
     provider = args.provider
     target_url = args.url
