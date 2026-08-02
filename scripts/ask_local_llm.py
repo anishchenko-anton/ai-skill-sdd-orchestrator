@@ -27,7 +27,7 @@ def notify_error(msg):
         notify_telegram.send_message(f"🚨 **QA-Agent Error**\n\n```text\n{msg}\n```")
 
 def detect_provider():
-    """Detect if LM Studio (port 1234) or Ollama (port 11434) is currently running."""
+    """Detect if LM Studio (port 1234), Ollama (port 11434), or llama.cpp (port 8080) is currently running."""
     # Check LM Studio first
     try:
         req = urllib.request.Request("http://localhost:1234/v1/models", headers={"User-Agent": "SDD-Orchestrator"})
@@ -43,6 +43,15 @@ def detect_provider():
         with urllib.request.urlopen(req, timeout=2) as resp:
             if resp.status == 200:
                 return "ollama", "http://localhost:11434/api/generate"
+    except Exception:
+        pass
+
+    # Check llama.cpp (port 8080)
+    try:
+        req = urllib.request.Request("http://127.0.0.1:8080/v1/models", headers={"User-Agent": "SDD-Orchestrator"})
+        with urllib.request.urlopen(req, timeout=2) as resp:
+            if resp.status == 200:
+                return "llamacpp", "http://127.0.0.1:8080/v1/chat/completions"
     except Exception:
         pass
 
@@ -79,12 +88,12 @@ def _count_and_report_tokens(final_prompt: str, rules_text: str, prompt_text: st
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Query local LLM (LM Studio / Ollama) and save output to a clean UTF-8 file.")
-    parser.add_argument("--model", required=False, default="local-model", help="Model name (e.g. qwen2.5-coder:7b or local-model for LM Studio)")
+    parser = argparse.ArgumentParser(description="Query local LLM (LM Studio / Ollama / llama.cpp) and save output to a clean UTF-8 file.")
+    parser.add_argument("--model", required=False, default="local-model", help="Model name (e.g. qwen2.5-coder:7b or local-model for LM Studio/llama.cpp)")
     parser.add_argument("--prompt", required=True, help="Path to the prompt markdown file")
     parser.add_argument("--rules", required=False, help="Path to the framework rules file to prepend to the prompt")
     parser.add_argument("--out", required=True, help="Path to save the generated output (UTF-8)")
-    parser.add_argument("--provider", choices=["auto", "lmstudio", "ollama"], default="auto", help="Local LLM provider (default: auto)")
+    parser.add_argument("--provider", choices=["auto", "lmstudio", "ollama", "llamacpp"], default="auto", help="Local LLM provider (default: auto)")
     parser.add_argument("--url", required=False, help="Custom endpoint URL override")
     parser.add_argument("--count-tokens", action="store_true", help="Count tokens in the composed prompt via tiktoken and exit (no LLM request)")
     parser.add_argument("--token-encoding", default="cl100k_base", help="tiktoken encoding to use (default: cl100k_base)")
@@ -126,7 +135,7 @@ def main():
     if provider == "auto" and not target_url:
         detected_prov, detected_url = detect_provider()
         if not detected_prov:
-            notify_error("Neither LM Studio (port 1234) nor Ollama (port 11434) is responding. Please start your local LLM server.")
+            notify_error("Neither LM Studio (port 1234), Ollama (port 11434), nor llama.cpp (port 8080) is responding. Please start your local LLM server.")
             sys.exit(1)
         provider = detected_prov
         target_url = detected_url
@@ -134,6 +143,8 @@ def main():
     elif not target_url:
         if provider == "lmstudio":
             target_url = "http://localhost:1234/v1/chat/completions"
+        elif provider == "llamacpp":
+            target_url = "http://127.0.0.1:8080/v1/chat/completions"
         else:
             target_url = "http://localhost:11434/api/generate"
 
@@ -141,7 +152,7 @@ def main():
         "Content-Type": "application/json"
     }
 
-    if provider == "lmstudio":
+    if provider in ("lmstudio", "llamacpp"):
         messages = []
         if rules_text:
             messages.append({"role": "system", "content": rules_text})
@@ -171,7 +182,7 @@ def main():
         with urllib.request.urlopen(req) as response:
             if response.status == 200:
                 result = json.loads(response.read().decode('utf-8'))
-                if provider == "lmstudio":
+                if provider in ("lmstudio", "llamacpp"):
                     generated_text = result.get('choices', [{}])[0].get('message', {}).get('content', '')
                 else:
                     generated_text = result.get('response', '')

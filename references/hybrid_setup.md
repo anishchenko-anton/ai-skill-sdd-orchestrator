@@ -32,31 +32,43 @@
 4. Выберите скачанную модель наверху и нажмите **Start Server**.
 5. Сервер по умолчанию запустится на порту `http://localhost:1234` с API, совместимым с OpenAI.
 
+### Вариант В: Использование llama.cpp / llama-server
+1. Соберите или скачайте бинарный файл `llama-server` (из проекта [llama.cpp](https://github.com/ggerganov/llama.cpp)).
+2. Запустите сервер с нужной GGUF-моделью:
+   ```bash
+   llama-server -m models/qwen2.5-coder-7b-instruct-q4_k_m.gguf -c 8192 --port 8080
+   ```
+3. Сервер запустится на порту `http://127.0.0.1:8080` с OpenAI-совместимым REST API (`/v1/chat/completions`).
+
 ---
 
 ## 2. Использование скрипта интеграции (`ask_local_llm.py`)
 
-На Слое 3 (Execution) агент-оркестратор вызывает локальный скрипт `ask_local_llm.py`. Скрипт поддерживает как **LM Studio**, так и **Ollama** с автоматическим обнаружением работающего локального сервера.
+На Слое 3 (Execution) агент-оркестратор вызывает локальный скрипт `ask_local_llm.py`. Скрипт поддерживает **LM Studio**, **Ollama** и **llama.cpp** с автоматическим обнаружением работающего локального сервера.
 
 ### Команды вызова `ask_local_llm.py`:
 
 ```bash
-# Автоматическое определение (сначала LM Studio на порту 1234, затем Ollama на 11434)
+# Автоматическое определение (LM Studio :1234 -> Ollama :11434 -> llama.cpp :8080)
 python scripts/ask_local_llm.py --prompt prompts/devops_task.md --out output.code
 
 # Явное указание LM Studio
 python scripts/ask_local_llm.py --provider lmstudio --prompt prompts/devops_task.md --out output.code
 
+# Явное указание llama.cpp (порты/эндпоинты по умолчанию 127.0.0.1:8080)
+python scripts/ask_local_llm.py --provider llamacpp --prompt prompts/devops_task.md --out output.code
+
 # С передачей дополнительных правил фреймворка
-python scripts/ask_local_llm.py --provider lmstudio --prompt prompt.md --rules references/backend_best_practices.md --out code.py
+python scripts/ask_local_llm.py --provider llamacpp --prompt prompt.md --rules references/backend_best_practices.md --out code.py
 ```
 
-### Формат обращения к LM Studio API (OpenAI Compatible):
+### Формат обращения к LM Studio / llama.cpp API (OpenAI Compatible):
 
 ```python
-# Эндпоинт LM Studio по умолчанию: http://localhost:1234/v1/chat/completions
+# Эндпоинт LM Studio: http://localhost:1234/v1/chat/completions
+# Эндпоинт llama.cpp: http://127.0.0.1:8080/v1/chat/completions
 payload = {
-    "model": "local-model", # В LM Studio по умолчанию используется загруженная модель
+    "model": "local-model", # Или имя конкретной загруженной модели
     "messages": [
         {"role": "system", "content": rules_text},
         {"role": "user", "content": prompt_text}
