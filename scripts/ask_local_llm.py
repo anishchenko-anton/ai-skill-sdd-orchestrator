@@ -57,6 +57,20 @@ def detect_provider():
 
     return None, None
 
+def fetch_first_llamacpp_model():
+    """Fetch the first available model ID from llama.cpp server."""
+    try:
+        req = urllib.request.Request("http://127.0.0.1:8080/v1/models", headers={"User-Agent": "SDD-Orchestrator"})
+        with urllib.request.urlopen(req, timeout=3) as resp:
+            if resp.status == 200:
+                data = json.loads(resp.read().decode('utf-8'))
+                models = data.get('data', [])
+                if models and 'id' in models[0]:
+                    return models[0]['id']
+    except Exception:
+        pass
+    return "local-model"
+
 def _count_and_report_tokens(final_prompt: str, rules_text: str, prompt_text: str, encoding_name: str) -> None:
     """Print token counts for the composed prompt using tiktoken."""
     if not _TIKTOKEN_AVAILABLE:
@@ -152,6 +166,10 @@ def main():
         "Content-Type": "application/json"
     }
 
+    model_name = args.model
+    if provider == "llamacpp" and model_name == "local-model":
+        model_name = fetch_first_llamacpp_model()
+
     if provider in ("lmstudio", "llamacpp"):
         messages = []
         if rules_text:
@@ -161,7 +179,7 @@ def main():
             messages.append({"role": "user", "content": final_prompt})
 
         payload = {
-            "model": args.model,
+            "model": model_name,
             "messages": messages,
             "temperature": 0.2,
             "stream": False
