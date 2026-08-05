@@ -116,11 +116,15 @@ Depending on the context, the agent assumes one of three roles:
 
 
 
-### Scope & Execution Threshold (STRICT PLAN FIRST)
+### Scope & Execution Threshold (STRICT PLAN FIRST & 100% LOCAL OFFLOADING)
 - **Mandatory Pre-Execution Plan (STRICT PLAN FIRST):** BEFORE making ANY file edits (even 1-line edits, typos, or micro-fixes) or deployment commands, the agent MUST present a plan in chat, list target files, and STOP to receive explicit human textual confirmation ("ok", "делай", "погнали", "одобряю").
 - **1. Сначала Спецификация (`.openspec/instruction.md`):** Запрещено передавать задачу в разработку без созданного файла контракта/инструкции.
-- **2. Сначала Тест (TDD Red Phase):** Сначала создается падающий тест `*.spec.ts` / `test_*.py` до написания кода реализации.
-- **3. Обязательное делегирование в LM Studio:** Формирование промпта и отправка задачи локальной LLM через `ask_local_llm.py` с обязательным предварительным отображением промпта в чате.
+- **2. Сначала Тест через Локалку (TDD Red Phase Offloading):** Генерация падающего теста `*.spec.ts` / `test_*.py` поручается локальной LLM через `ask_local_llm.py` до создания кода реализации.
+- **3. Обязательное делегирование в LM Studio / Ollama:**
+  - Автоматическая сборка промпта через `python scripts/build_worker_prompt.py --persona ... --instruction ... --rules ... --out prompt.md`.
+  - Вызов `python scripts/ask_local_llm.py` для физической генерации кода.
+  - **Zero-Code-in-Orchestrator-Context Protocol:** Облачный Оркестратор пишет ТОЛЬКО `.openspec/*.md` спецификации. Прямое написание кода реализации Оркестратором разрешено ИСКЛЮЧИТЕЛЬНО при явной команде пользователя: *"сделай сам"* / *"пиши сам"*.
+- **4. Локальный цикл самоисправления (Local Ref Loop):** Автоматический прогон тестов и передача логов ошибок назад в локальную модель (через `debug_worker_persona.md`) при сбоях.
 - **Module Isolation:** Worker context is strictly restricted to its target module and relevant C4 documents.
 
 ### Full-Stack Zero-Config Architecture Protocol (STRICT PROHIBITION)
